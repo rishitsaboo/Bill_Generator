@@ -199,7 +199,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
           </div>
 
           <img
-            src={`${BASE}images/right_side/mainlogo.png`}
+            src={`${BASE}images/right_side/QRcode.jpg`}
             alt="QR Code"
             style={{ width: "96px", height: "96px", objectFit: "contain",marginTop:"4px"  }}
             crossOrigin="anonymous"
