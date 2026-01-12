@@ -1,8 +1,4 @@
 import React,{useState} from "react";
-
-
-
-
 interface BillItem {
   id: string;
   name: string;
@@ -23,7 +19,6 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
     year: "numeric",
   });
   const [customerName, setCustomerName] = useState<string>("");
-
   return (
     <div className="flex-1 p-4 overflow-auto">
       <h2 className="font-bold mb-2">Bill preview</h2>
@@ -37,6 +32,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
       {/* ✅ html2canvas SAFE container */}
       <div
         id="bill-preview"
+        className="lg:sticky lg:top-0"
         style={{
           backgroundColor: "#ffffff",
           color: "#000000",
@@ -45,8 +41,9 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
           margin:"1px",
           border:"2px solid #525151ff",
           borderRadius: "12px",
-          minHeight: "650px",
+          minHeight: "550px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          marginBlock:"20px",
         }}
       >
         {/* Logo & Shop Name */}
@@ -61,16 +58,16 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
           }}
         >
           <img
-            src="/mainlogo.png"
+            src="/images/right_side/mainlogo.png"
             alt="Shop Logo"
             style={{ width: "85px", height: "85px", objectFit: "contain" }}
             crossOrigin="anonymous"
           />
 
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: "left" , paddingBottom:"10px"}}>
             <p
               style={{
-                fontSize: "45px",
+                fontSize: "40px",
                 fontWeight: 800,
                 letterSpacing: "1px",
                 color: "#5e2c13",
@@ -80,7 +77,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
             </p>
             <p
               style={{
-                fontSize: "45px",
+                fontSize: "40px",
                 fontWeight: 800,
                 letterSpacing: "1px",
                 color: "#edb046",
@@ -114,16 +111,17 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr",
+            gridTemplateColumns: "0.5fr 2fr 1fr 1fr",
             fontSize: "13px",
-            fontWeight: 700,
+            fontWeight: 600,
             backgroundColor: "#000",
             color: "#fff",
             padding: "6px",
           }}
         >
+          <span>No.</span>
           <span>Item</span>
-          <span style={{ textAlign: "center" }}>Qty</span>
+          <span style={{ textAlign: "center" }}>Qty-(Kg/pcs)</span>
           <span style={{ textAlign: "right" }}>Amount</span>
         </div>
 
@@ -140,21 +138,21 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
             No items selected
           </p>
         ) : (
-          billItems.map((item) => (
+          billItems.map((item,index) => (
             <div
               key={item.id}
               style={{
                 display: "grid",
-                gridTemplateColumns: "2fr 1fr 1fr",
+                gridTemplateColumns: "0.5fr 2fr 1fr 1fr",
                 fontSize: "13px",
                 padding: "8px 0",
                 borderBottom: "1px solid #d1d5db",
                 borderLeft :"1px solid #d1d5db",
-                borderRight :"1px solid #d1d5db"
+                borderRight :"1px solid #d1d5db",
 
               }}
-            >
-              <span style={{paddingLeft:"20px", fontWeight: 500}}>{item.name}</span>
+            ><span style={{paddingLeft:"10px", fontWeight: 500}}>{index + 1}</span>
+              <span style={{paddingLeft:"", fontWeight: 500}}>{item.name}</span>
               <span style={{ textAlign: "center" }}>{item.qty}</span>
               <span style={{ paddingRight:"10px" , textAlign: "right", fontWeight: 600 }}>
                 ₹{item.amount.toFixed(2)}
@@ -196,10 +194,11 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
             </p>
             <p>702, Vinay Complex, College Road,</p>
             <p>Bolav, Bharuch.</p>
+            <p>+91 9377263148</p>
           </div>
 
           <img
-            src="/QRcode.jpg"
+            src="/images/right_side/QRcode.jpg"
             alt="QR Code"
             style={{ width: "96px", height: "96px", objectFit: "contain",marginTop:"4px"  }}
             crossOrigin="anonymous"
