@@ -19,6 +19,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
     year: "numeric",
   });
   const [customerName, setCustomerName] = useState<string>("");
+  const BASE = import.meta.env.BASE_URL;
   return (
     <div className="flex-1 p-4 overflow-auto">
       <h2 className="font-bold mb-2">Bill preview</h2>
@@ -58,7 +59,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
           }}
         >
           <img
-            src="/images/right_side/mainlogo.png"
+            src={`${BASE}images/right_side/mainlogo.png`}
             alt="Shop Logo"
             style={{ width: "85px", height: "85px", objectFit: "contain" }}
             crossOrigin="anonymous"
@@ -198,7 +199,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
           </div>
 
           <img
-            src="/images/right_side/QRcode.jpg"
+            src={`${BASE}images/right_side/mainlogo.png`}
             alt="QR Code"
             style={{ width: "96px", height: "96px", objectFit: "contain",marginTop:"4px"  }}
             crossOrigin="anonymous"
