@@ -78,7 +78,7 @@ const items: Record<Category, Item[]> = {
     { id: "Sweets-4", name: "Mung Dal Halwa", image: `${BASE}/images/Sweets/mung_dal_halwa.jpg`, amount: 650 },
     { id: "Sweets-5", name: "Ghewar", image: `${BASE}/images/Sweets/ghewar.jpg`, amount: 650 },
     { id: "Sweets-6", name: "Rabdi Ghewar", image: `${BASE}/images/Sweets/rabdi_ghewar.jpg`, amount: 850 },
-    { id: "Sweets-7", name: "Gund ke Laddu", image: `${BASE}/images/Sweets/gund_ke_laddu.jpg`, amount: 700 },
+    { id: "Sweets-7", name: "Gund ke Laddu", image: `${BASE}/images/Sweets/gund_ke_laddu.jpg`, amount: 650 },
     { id: "Sweets-8", name: "Mohan Thal", image: `${BASE}/images/Sweets/mohan_thal.jpg`, amount: 650 },
     { id: "Sweets-9", name: "Besan Ke Laddu", image: `${BASE}/images/Sweets/besan_ke_laddu.jpg`, amount: 650 },
     { id: "Sweets-10", name: "Petha", image: `${BASE}/images/Sweets/petha.jpg`, amount: 320 },
