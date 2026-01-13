@@ -1,14 +1,14 @@
 # Quick Bill - Bill Generator
 
-A modern, responsive React + TypeScript web application for generating and managing bills. Built with Vite, Tailwind CSS, and html2canvas for seamless bill creation and export.
+A modern, responsive React + TypeScript web application for generating and managing bills for Kavita's Kitchen. Built with Vite, Tailwind CSS, and html2canvas for seamless bill creation and export.
 
 ## Features
 
-- **Category-based Item Management**: Browse items organized by categories (Namkeens, Sweets, Seasonal, Nasta Items, Sabzi, Others)
+- **Category-based Item Management**: Browse items organized by categories (Namkeens, Sweets, Nasta Items, Sabzi, Others)
 - **Dynamic Bill Generation**: Add/remove items to create custom bills with real-time total calculation
 - **Customer Information**: Input and display customer name on bills
 - **Bill Preview**: Live preview of the formatted bill receipt
-- **Download as Image**: Export bills as high-quality PNG images using html2canvas
+- **Download as Image**: Export bills as high-quality JPEG images using html2canvas
 - **Responsive Design**: Mobile-friendly interface with Tailwind CSS
 - **Modern Stack**: React 19, TypeScript, Vite 7, and Tailwind CSS 4
 
@@ -17,7 +17,9 @@ A modern, responsive React + TypeScript web application for generating and manag
 - **Frontend Framework**: React 19 with TypeScript
 - **Build Tool**: Vite 7
 - **Styling**: Tailwind CSS 4 with PostCSS
-- **Image Capture**: html2canvas for bill export
+- **Image Capture**: html2canvas for bill export, dom-to-image-more for additional image handling
+- **PDF Generation**: html2pdf.js for potential PDF exports
+- **Icons**: Lucide React for UI icons
 - **Linting**: ESLint with TypeScript support
 - **Development Server**: Vite HMR for instant refresh
 
@@ -29,19 +31,23 @@ bill_generater/
 │   ├── pages/
 │   │   └── bill_preview.tsx          # Main bill generator component
 │   ├── components/
-│   │   └── AddItemModalt.tsx         # Modal for adding items to bill
-│   ├── assets/
-│   │   └── images/                   # Product images
+│   │   ├── AddItemModalt.tsx         # Modal for adding items to bill
+│   │   └── right_side.tsx            # Right side bill preview component
 │   ├── App.tsx                       # Root app component
 │   ├── main.tsx                      # Entry point
 │   ├── index.css                     # Tailwind directives
 │   └── App.css                       # Global styles
 ├── public/
-│   ├── mainlogo.png                  # Restaurant/shop logo
-│   └── QRcode.jpg                    # QR code for receipts
+│   └── images/                       # Product images, logos, and QR codes
+│       ├── Namkeens/
+│       ├── Nasta_Items/
+│       ├── right_side/
+│       ├── Sabzi/
+│       └── Sweets/
 ├── index.html                        # HTML template
 ├── vite.config.ts                    # Vite configuration
-├── tailwind.config.ts                # Tailwind CSS configuration
+├── tailwind.config.cjs               # Tailwind CSS configuration (CommonJS)
+├── tailwind.config.js                # Tailwind CSS configuration (ESM)
 ├── postcss.config.js                 # PostCSS configuration
 ├── tsconfig.json                     # TypeScript configuration
 └── package.json                      # Project dependencies
@@ -86,6 +92,14 @@ This generates optimized files in the `dist/` directory.
 ```bash
 npm run preview
 ```
+
+### Deploy to GitHub Pages
+
+```bash
+npm run deploy
+```
+
+This builds the project and deploys it to GitHub Pages using gh-pages.
 
 ## Available Scripts
 
