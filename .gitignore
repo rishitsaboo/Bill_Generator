@@ -84,3 +84,21 @@ pnpm-lock.yaml
 
 # Production
 .env.production.local
+
+# Backend specific
+Backend/my_app/logs/
+Backend/my_app/coverage/
+Backend/my_app/.env
+Backend/my_app/*.env
+
+# Frontend specific
+Frontend/.vite/
+Frontend/coverage/
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+Frontend/.env.local
+Frontend/.env.production
+
+# Cloudinary config (may contain secrets)
+Backend/my_app/config/cloudinary.js
