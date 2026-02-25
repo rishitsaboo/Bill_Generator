@@ -5,7 +5,9 @@ const router = express.Router()
 const Bill = require('../models/billModel');
 
 
-const billController = require('../controllers/billController');
+const billController = require('../controllers/billControllers');
 
 router.post('/generate-bill', billController.generateBill);
+
+module.exports = router;
 

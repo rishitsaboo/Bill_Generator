@@ -1,11 +1,14 @@
-import React from "react";
+import { Routes, Route } from "react-router-dom";
 import BillGenerator from "./pages/bill_preview";
+import Login from "./components/login";
+import Register from "./components/Register";
 
-function App() {
+export default function App() {
   return (
-    <div className="h-scree w-screen bg-gray-100">
-      <BillGenerator />
-    </div>
-  )
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/bill-generator" element={<BillGenerator />} />
+    </Routes>
+  );
 }
-export default App;
