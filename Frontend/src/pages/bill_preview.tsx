@@ -333,7 +333,7 @@ function BillGenerator() {
           </div>
         </div>
       </div>
-      {/* ---------- Modal ---------- */}
+      {/* ---------- Model ---------- */}
       {showModal && currentItem && (
         <AddItemModal
           item={currentItem}

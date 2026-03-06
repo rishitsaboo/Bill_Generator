@@ -1,118 +1,116 @@
-import React,{ useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-interface RegisterForm{
-    email:string,
-    secretKey:string,
-    password:string
+
+interface RegisterForm {
+  email: string;
+  Adminkey:string;
+  password: string;
 }
 
 const Register: React.FC = () => {
-    const [ formData , setFormData ] = useState<RegisterForm> ({
+    const [formData,setFormdata] = useState<RegisterForm>({
         email:"",
-        secretKey:"",
-        password:"",
+        Adminkey:"",
+        password:""
     });
-
     const [error, setError] = useState<string>("");
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-            const { name, value } = e.target;
-    
-            setFormData((prev) => ({
-                ...prev,
-                [name]:value,   
-            }));
-        };
-//handleSubmit
-const navigate = useNavigate();
-const hadleSubmit = async (e:React.FormEvent < HTMLFormElement>) => {
-    e.preventDefault();
 
-    if (!formData.email || !formData.password || !formData.secretKey){
-        setError("All fields are required");
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+    
+        setFormdata((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+    };
+    const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+    if (!formData.email || !formData.password ||!formData.Adminkey) {
+      setError("All fields are required");
       return;
     }
     try{
-    const response = await fetch("http://localhost:3000/api/auth/register",{
-        method:"POST",
-        headers:{
-            "content-Type":"application/json",
-        },
-        body:JSON.stringify({
-            email:formData.email, 
-            secretKey: formData.secretKey,
-            password:formData.password,
-            
-        }),
-    });
+        const response = await fetch("http://localhost:3000/api/auth/register",{
+            method: "POST",
+            headers:{
+                "content-Type":"application/json",
+            },
+            body:JSON.stringify(formData)
+        });
 
-    const data = await response.json();
-    
-    if (!response.ok) {
-        throw Error(data.message || "Registration Failed");
-    }
-    alert("Admin registered Successfully")
-    setError("");
-    } 
-    catch (err: any) {
+        const data = await response.json();
+
+        if (!response.ok) {
+        throw new Error(data.message || "Login Failed");
+      }
+        console.log("Success", data);
+      setError("");
+    } catch (err: any) {
       setError(err.message);
     }
-}
+    }
+    return(
+<div className="flex items-center justify-center min-h-screen px-4">
 
-return(
-    <div className="flex justify-center item-center h-screen bg-gray-100">
-        <form onSubmit={hadleSubmit}
-        className="bg-white p-6 rounded-xl shadow-md w-80">
-            <h2 className="text-xl font-bold md-4 text-center">
-                Admin Register
-            </h2>
-             {error && (
-                <p className="text-red-500 text-sm mb-3 text-center">
-                    {error}
-                </p>
-            )}
-            <input 
-            type = "email"
-            name = "email"
-            placeholder="Email"
-            value = {formData.email}
-            onChange={handleChange}
-            className="w-full mb-3 p-2 border rounded"
-            />
-            <input 
-            type = "text"
-            name = "secretKey"
-            placeholder="Admins Secret Key"
-            value = {formData.secretKey}
-            onChange={handleChange}
-            className="w-full mb-3 p-2 border rounded"
-            />
-            <input 
-            type = "password"
-            name = "password"
-            placeholder="Password"
-            value = {formData.password}
-            onChange={handleChange}
-            className="w-full mb-3 p-2 border rounded"
-            />
-            <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-                Register
-            </button>
-            <p className="text-sm text-center mt-3 text-gray-400">
-                All ready loged in ?{""}
-                <span
-                    className="text-blue-500 hover:underline cursor-pointer"
-                    onClick={() => navigate("/Login")}
-                    >   
-                    Sing in
-                </span>
-            </p>
-        </form>
+      <form
+        className="flex flex-col pt-65 gap-5 items-center w-full max-w-md pt-6"
+        onSubmit={handleSubmit}
+      >
+
+        {error && (
+          <p className="text-red-600 text-sm font-semibold">{error}</p>
+        )}
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          placeholder-gray-500 placeholder:font-serif placeholder:text-lg 
+          focus:outline-none focus:ring-2 focus:ring-yellow-900"
+        />
+        <input
+          type="text"
+          name="Adminkey"
+          placeholder="Secreat key"
+          value={formData.Adminkey}
+          onChange={handleChange}
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          placeholder-gray-500 placeholder:font-serif placeholder:text-lg 
+          focus:outline-none focus:ring-2 focus:ring-yellow-900"
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          placeholder-gray-500 placeholder:font-serif placeholder:text-lg
+          focus:outline-none focus:ring-2 focus:ring-yellow-900 "
+        />
+
+        <button
+          type="submit"
+          className="w-32 sm:w-40 py-3 sm:py-4
+          font-serif font-bold text-lg sm:text-xl
+          bg-yellow-900 text-white rounded-2xl
+          shadow-md hover:bg-yellow-800 transition duration-300"
+        >
+          Register
+        </button>
+        <h2 className="text-xs text-yellow-900 font-serif ">
+            Already have an account? <span className="text-blue-500 hover:underline"><Link to ="/login">SingIn</Link></span>
+        </h2>
+      </form>
+      
     </div>
-    );
+);
 };
-
 export default Register;

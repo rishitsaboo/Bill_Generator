@@ -1,4 +1,4 @@
-import Login from "../components/login";
+import Register from "../components/Register";
 
 export default function LoginPage() {
   const isDesktop = window.innerWidth >= 768;
@@ -15,7 +15,7 @@ export default function LoginPage() {
       }}
     >
       <div className="absolute inset-0 flex items-center justify-center px-4">
-        <Login />
+        < Register/>
       </div>
     </div>
   );
