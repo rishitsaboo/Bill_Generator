@@ -1,19 +1,23 @@
-# Quick Bill - Bill Generator
+# Quick Bill – Bill Generator
 
 A modern, responsive React + TypeScript web application with Express.js backend for generating and managing bills for Kavita's Kitchen. Built with Vite, Tailwind CSS, MongoDB, and includes authentication, bill generation, and image export capabilities.
 
 ## Features
 
 ### Frontend
+
 - **Category-based Item Management**: Browse items organized by categories (Namkeens, Sweets, Nasta Items, Sabzi, Others)
 - **Dynamic Bill Generation**: Add/remove items to create custom bills with real-time total calculation
 - **Customer Information**: Input and display customer name on bills
 - **Bill Preview**: Live preview of the formatted bill receipt
 - **Download as Image**: Export bills as high-quality JPEG images using html2canvas
 - **Responsive Design**: Mobile-friendly interface with Tailwind CSS
-- **User Authentication**: Login and registration system with React Router
+- **User Authentication**: Login/registration system with protected routes using JWT tokens stored in localStorage
+- **Dashboard Analytics**: Visual statistics including sales charts, pie charts, top-selling items bar chart
+- **Products Management**: Full CRUD operations for managing product inventory
 
 ### Backend
+
 - **RESTful API**: Express.js backend with structured API endpoints
 - **User Authentication**: JWT-based authentication with bcryptjs password hashing
 - **MongoDB Integration**: Data persistence with Mongoose ODM
@@ -23,21 +27,27 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 ## Tech Stack
 
 ### Frontend
-- **Framework**: React 19 with TypeScript
-- **Build Tool**: Vite 7
-- **Styling**: Tailwind CSS 4 with PostCSS
-- **Routing**: React Router DOM 7
-- **Image Capture**: html2canvas for bill export, dom-to-image-more for additional image handling
-- **PDF Generation**: html2pdf.js for potential PDF exports
-- **Icons**: Lucide React for UI icons
-- **Linting**: ESLint with TypeScript support
+
+| Technology | Description |
+|------------|-------------|
+| Framework | React 19 with TypeScript |
+| Build Tool | Vite 7 |
+| Styling | Tailwind CSS 4 with PostCSS |
+| Routing | React Router DOM 7 |
+| Image Capture | html2canvas for bill export, dom-to-image-more |
+| PDF Generation | html2pdf.js for potential PDF exports |
+| Icons | Lucide React for UI icons |
+| Linting | ESLint with TypeScript support |
 
 ### Backend
-- **Runtime**: Node.js with Express.js 5
-- **Database**: MongoDB 7 with Mongoose ODM
-- **Authentication**: JWT (jsonwebtoken) with bcryptjs
-- **File Upload**: Multer with Cloudinary storage
-- **Development**: Nodemon for auto-restart
+
+| Technology | Description |
+|------------|-------------|
+| Runtime | Node.js with Express.js 5 |
+| Database | MongoDB 7 with Mongoose ODM |
+| Authentication | JWT (jsonwebtoken) with bcryptjs |
+| File Upload | Multer with Cloudinary storage |
+| Development | Nodemon for auto-restart |
 
 ## Project Structure
 
@@ -45,73 +55,99 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 bill_generater/
 ├── Frontend/                         # React Frontend Application
 │   ├── src/
-│   │   ├── pages/
-│   │   │   ├── bill_preview.tsx     # Main bill generator component
-│   │   │   └── login_page.tsx       # Login page component
+│   │   ├── api/                     # API modules
+│   │   │   ├── authApi.ts           # Authentication API calls
+│   │   │   ├── axios.ts             # Axios instance configuration
+│   │   │   ├── dashboardApi.ts      # Dashboard analytics API
+│   │   │   └── productApi.ts        # Product CRUD API calls
+│   │   │
 │   │   ├── components/
 │   │   │   ├── AddItemModalt.tsx    # Modal for adding items to bill
 │   │   │   ├── login.tsx            # Login form component
 │   │   │   ├── Register.tsx         # Registration form component
-│   │   │   └── right_side.tsx      # Right side bill preview component
-│   │   ├── App.tsx                 # Root app component with routing
-│   │   ├── main.tsx                # Entry point
-│   │   ├── index.css               # Tailwind directives
-│   │   └── App.css                 # Global styles
-│   ├── public/
-│   │   └── images/                 # Product images, logos, and QR codes
-│   │       ├── Namkeens/           # Namkeen product images
-│   │       ├── Nasta_Items/        # Nasta item images
-│   │       ├── right_side/         # Logo and QR code images
-│   │       ├── Sabzi/              # Sabzi product images
-│   │       └── Sweets/            # Sweets product images
-│   ├── index.html                  # HTML template
-│   ├── vite.config.ts              # Vite configuration
-│   ├── tailwind.config.cjs         # Tailwind CSS configuration (CommonJS)
-│   ├── tailwind.config.js          # Tailwind CSS configuration (ESM)
-│   ├── postcss.config.js           # PostCSS configuration
-│   ├── tsconfig.json               # TypeScript configuration
-│   └── package.json                # Frontend dependencies
+│   │   │   ├── right_side.tsx       # Right side bill preview component
+│   │   │   ├── dashboard/           # Dashboard components
+│   │   │   │   ├── CategoryPieChart.tsx
+│   │   │   │   ├── SalesChart.tsx
+│   │   │   │   ├── StatCard.tsx
+│   │   │   │   └── TopItemsBarChart.tsx
+│   │   │   ├── layout/              # Layout components
+│   │   │   │   ├── DashboardLayout.tsx
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   └── Sidebar.tsx
+│   │   │   └── products/            # Product management components
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── bill_preview.tsx    # Main bill generator component
+│   │   │   ├── login_page.tsx      # Login page component
+│   │   │   ├── register_page.tsx    # Registration page component
+│   │   │   ├── dashboard.tsx        # Dashboard analytics page
+│   │   │   └── products.tsx         # Products management page
+│   │   │
+│   │   ├── types/
+│   │   │   └── dashboard.ts         # TypeScript type definitions
+│   │   │
+│   │   ├── App.tsx                  # Root app routing
+│   │   ├── main.tsx                 # Main entry point
+│   │   ├── index.css                # Tailwind directives
+│   │   └── App.css                  # Global styles
+│   │
+│   ├── public/images/               # Product images, logos, QR codes
+│   │   ├── Login/
+│   │   ├── Namkeens/
+│   │   ├── Nasta_Items/
+│   │   ├── right_side/
+│   │   ├── Sabzi/
+│   │   └── Sweets/
+│   │
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── tsconfig.json
+│   ├── tsconfig.app.json
+│   └── tsconfig.node.json
 │
-├── Backend/                         # Express.js Backend Application
+├── Backend/                          # Express.js Backend
 │   └── my_app/
-│       ├── config/                  # Configuration files
-│       ├── controllers/            # Request handlers
-│       │   ├── authControllers.js  # Authentication logic
-│       │   ├── billControllers.js # Bill management logic
-│       │   ├── itemControllers.js  # Item CRUD operations
-│       │   └── statsController.js  # Statistics and analytics
-│       ├── models/                  # Mongoose models
-│       │   ├── Admin.js            # Admin user model
-│       │   ├── billModel.js        # Bill document model
-│       │   └── ItemModel.js        # Item product model
-│       ├── routes/                  # API route definitions
-│       │   ├── authroutes.js       # Authentication routes
-│       │   ├── billRoutes.js       # Bill management routes
-│       │   ├── itemRoutes.js       # Item CRUD routes
-│       │   └── statsRoutes.js      # Statistics routes
-│       ├── index.js                 # Express app entry point
-│       ├── package.json            # Backend dependencies
+│       ├── config/
+│       ├── controllers/
+│       │   ├── authControllers.js   # Authentication logic
+│       │   ├── billControllers.js  # Bill operations
+│       │   ├── itemControllers.js  # Item operations
+│       │   └── statsController.js  # Statistics
+│       ├── models/
+│       │   ├── Admin.js
+│       │   ├── billModel.js
+│       │   └── ItemModel.js
+│       ├── routes/
+│       │   ├── authroutes.js
+│       │   ├── billRoutes.js
+│       │   ├── itemRoutes.js
+│       │   └── statsRoutes.js
+│       ├── index.js                 # Entry point
+│       ├── package.json
 │       └── .env                     # Environment variables
 │
-├── .gitignore                       # Git ignore rules
-└── README.md                        # This file
+├── .gitignore
+└── README.md
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- **Node.js** (v16 or higher)
-- **MongoDB** (local or Atlas cloud instance)
-- **Cloudinary** account (for image storage)
-- npm or yarn
+- Node.js v16 or higher
+- MongoDB Atlas instance
+- Cloudinary account for image storage
+- npm or yarn package manager
 
 ### Environment Variables
 
 Create a `.env` file in `Backend/my_app/` with the following:
 
 ```
-env
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
@@ -120,69 +156,53 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-### Frontend Installation
+### Installation
 
-1. Navigate to the Frontend directory
-   
+1. **Frontend Setup**
+
+```bash
+cd Frontend
+npm install
+```
+
+2. **Backend Setup**
+
 ```
 bash
-   cd Frontend
-   
+cd Backend/my_app
+npm install
 ```
 
-2. Install dependencies
-   
+### Running the Application
+
+1. **Start Frontend** (Available at http://localhost:5173)
+
 ```
 bash
-   npm install
-   
+cd Frontend
+npm run dev
 ```
 
-3. Start the development server
-   
-```
-bash
-   npm run dev
-   
-```
-   The app will be available at `http://localhost:5173` (or next available port)
+2. **Start Backend** (Available at http://localhost:3000)
 
-### Backend Installation
-
-1. Navigate to the Backend directory
-   
 ```
 bash
-   cd Backend/my_app
-   
+cd Backend/my_app
+npm run dev
 ```
 
-2. Install dependencies
-   
-```
-bash
-   npm install
-   
-```
+3. **Run Both Services**
 
-3. Start the development server
-   
 ```
 bash
-   npm run dev
-   
+# Terminal 1
+cd Frontend && npm run dev
+
+# Terminal 2
+cd Backend/my_app && npm run dev
 ```
-   The API will be available at `http://localhost:5000`
 
-### Running Both Services
-
-For development, you'll need to run both Frontend and Backend:
-- Frontend: `cd Frontend && npm run dev`
-- Backend: `cd Backend/my_app && npm run dev`
-
-## Build for Production
-
-### Frontend
+### Build for Production
 
 ```
 bash
@@ -190,7 +210,7 @@ cd Frontend
 npm run build
 ```
 
-This generates optimized files in the `dist/` directory.
+This generates a `dist` folder that can be deployed.
 
 ### Preview Production Build
 
@@ -200,150 +220,71 @@ cd Frontend
 npm run preview
 ```
 
-### Deploy to GitHub Pages
-
-```
-bash
-cd Frontend
-npm run deploy
-```
-
-This builds the project and deploys it to GitHub Pages using gh-pages.
-
-## Available Scripts
-
-### Frontend
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint to check code quality
-
-### Backend
-- `npm run dev` - Start development server with nodemon
-- `npm run test` - Run tests (if configured)
-
 ## API Endpoints
 
-### Authentication Routes (`/api/auth`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/register` | Register a new admin user |
-| POST | `/login` | Login and get JWT token |
-| GET | `/me` | Get current user info |
+### Authentication
 
-### Item Routes (`/api/items`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Get all items |
-| POST | `/` | Create new item (with image upload) |
-| PUT | `/:id` | Update item details |
-| DELETE | `/:id` | Delete item |
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user
 
-### Bill Routes (`/api/bills`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Get all bills |
-| POST | `/` | Create new bill |
-| GET | `/:id` | Get specific bill |
-| DELETE | `/:id` | Delete bill |
+### Items
 
-### Stats Routes (`/api/stats`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Get dashboard statistics |
+- `GET /api/items` - Get all items
+- `POST /api/items` - Create new item
+- `PUT /api/items/:id` - Update item
+- `DELETE /api/items/:id` - Delete item
+
+### Bills
+
+- `GET /api/bills` - Get all bills
+- `POST /api/bills` - Create new bill
+- `GET /api/bills/:id` - Get specific bill
+
+### Statistics
+
+- `GET /api/stats` - Get dashboard statistics
 
 ## Usage
 
-### Frontend Usage
-
-1. **Login/Register**: Access the app and either login or register a new account
-2. **Select Category**: Click on category buttons (Namkeens, Sweets, etc.) to filter items
-3. **Add Items**: Click on any item card to open the add-to-bill modal
-4. **Specify Quantity**: Choose quantity type (Kg, pieces) and enter the amount
-5. **View Bill**: The bill preview updates in real-time on the right side
-6. **Customer Name**: Enter customer name in the input field at the top of the bill preview
-7. **Download Bill**: Click the "Download Bill" button to export the bill as a PNG image
-
-### Backend API Usage
-
-The backend provides RESTful APIs for:
-- Managing user authentication
-- CRUD operations for items
-- Bill generation and management
-- Dashboard statistics
+1. Login or register an account
+2. Select a category to filter items
+3. Add items to the bill
+4. Select quantity type (full/half)
+5. View the bill in real-time
+6. Enter customer name
+7. Download the bill as an image
 
 ## Data Models
 
-### Item Model
+### ItemModel
+
 ```
 javascript
 {
-  name: String,           // Item name
-  category: String,       // Category (Namkeens, Sweets, etc.)
-  image: String,          // Cloudinary image URL
-  amount: Number,         // Price per unit
+  name: String,
+  category: String,
+  image: String,
+  amount: Number,
   createdAt: Date
 }
 ```
 
-### Bill Model
+### BillModel
+
 ```
 javascript
 {
-  customerName: String,   // Customer name
-  items: [{
-    item: ObjectId,       // Reference to Item
-    qtyType: String,      // "Kg" or "Pcs"
-    quantity: Number,     // Amount
-    total: Number         // Line item total
-  }],
-  grandTotal: Number,     // Total bill amount
+  customerName: String,
+  items: Array,
+  qtyType: String,
+  quantity: Number,
+  total: Number,
+  grandTotal: Number,
   createdAt: Date
 }
 ```
-
-### Admin Model
-```
-javascript
-{
-  username: String,       // Admin username
-  password: String,       // Hashed password
-  createdAt: Date
-}
-```
-
-## Configuration Files
-
-### Frontend
-- **vite.config.ts**: Configures Vite with React plugin and TypeScript support
-- **tailwind.config.ts**: Tailwind CSS theme customization
-- **postcss.config.js**: PostCSS with Tailwind plugin
-- **tsconfig.json**: TypeScript compiler options
-
-### Backend
-- **index.js**: Express app setup with middleware and routes
-- **config/**: Environment and database configuration
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Development Notes
-
-- **Hot Module Replacement (HMR)** is enabled for instant updates during development
-- **TypeScript strict mode** is configured for type safety
-- **ESLint** configuration enforces code quality standards
-- **Tailwind CSS** is configured with content purging for optimal production builds
-- **JWT tokens** expire after 24 hours (configurable)
-- **Cloudinary** handles all image uploads for items
-
-## Project Demo
-
-The project is deployed at: https://rishitsaboo.github.io/bill_generator
 
 ## License
 
-This project is proprietary. All rights reserved.
+All rights reserved. Proprietary project.
