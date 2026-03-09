@@ -128,7 +128,48 @@ const items: Record<Category, Item[]> = {
 
   Others: [],
 };
+const saveBillToDatabase = async (
+  billItems: { id: string; name: string; qty: number; amount: number; isCustom?: boolean }[]
+) =>{
+  try {
+    const formattedItems = billItems.map((item) =>({
+      name:item.name,
+      quantity:item.qty,
+      price:item.amount,
+      total:item.qty * item.amount,
+      category:"",
+      itemId:null
 
+    }));
+    const totalAmount = formattedItems.reduce(
+      (sum,item) => sum + item.total,
+      0
+    );
+    const billData = {
+      customerName:"customer",
+      items: formattedItems,
+      totalAmount: totalAmount
+    };
+
+    const response = await fetch("http://localhost:3000/api/generate-bill",{
+      method:"POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body:JSON.stringify(billData)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Save failed: ${response.status} ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("Bill saved :",data);
+  } catch (error) {
+    console.error("Error saving bill:", error);
+  }
+};
 /* ---------------------- Main Component ---------------------- */
 
 function BillGenerator() {
@@ -155,14 +196,14 @@ function BillGenerator() {
   };
   const handleGenerateBill = async () => {
     console.log("Generate Bill button clicked");
+    await saveBillToDatabase(billItems);
+
     try {
       const billElement = document.getElementById("bill-preview");
       if (!billElement) {
         console.error("Bill preview element not found");
         return;
       }
-
-      // Wait for images to load
       const images = billElement.querySelectorAll('img');
       await Promise.all([...images].map(img => 
         img.complete ? Promise.resolve() : new Promise(resolve => { img.onload = resolve; })
@@ -217,6 +258,7 @@ function BillGenerator() {
     setCustomPrice("");
     setCustomQty("");
   }
+
   /* ---------------------- Render ---------------------- */
 
   return (

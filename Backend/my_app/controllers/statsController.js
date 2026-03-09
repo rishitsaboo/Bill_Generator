@@ -280,7 +280,7 @@ exports.getDashboardData = async (req, res) => {
 //     }
 // };
 
-// //pie    chart
+// //pie chart
 // exports.getMonthlySalesByCategories = async (req,res) => {  
 //     try{
 //         const{ year, month} = req.query;
