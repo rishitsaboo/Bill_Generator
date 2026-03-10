@@ -59,13 +59,19 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
           </NavLink>
 
           <NavLink
-            to="/items"
+            to="/Products"
             className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
           >
             <FaBox />
             Manage Items
           </NavLink>
-
+          <NavLink
+            to="/bill-generator"
+            className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
+          >
+            <FaBox />
+            bill-generator
+          </NavLink>
         </nav>
       </div>
     </>

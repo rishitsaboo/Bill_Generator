@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginForm {
   email: string;
@@ -7,6 +7,7 @@ interface LoginForm {
 }
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginForm>({
     email: "",
     password: "",
@@ -48,7 +49,11 @@ const Login: React.FC = () => {
       }
 
       console.log("Success", data);
+      if (data?.token) {
+        localStorage.setItem("auth_token", data.token);
+      }
       setError("");
+      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
     }
@@ -72,7 +77,7 @@ const Login: React.FC = () => {
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-64 sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
           placeholder-gray-500 placeholder:font-serif placeholder:text-lg 
           focus:outline-none focus:ring-2 focus:ring-yellow-900"
         />
@@ -83,7 +88,7 @@ const Login: React.FC = () => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-64 sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
           placeholder-gray-500 placeholder:font-serif placeholder:text-lg
           focus:outline-none focus:ring-2 focus:ring-yellow-900 "
         />

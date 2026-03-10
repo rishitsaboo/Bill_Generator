@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 
 
 interface RegisterForm {
   email: string;
-  Adminkey:string;
+  adminKey: string;
   password: string;
 }
 
 const Register: React.FC = () => {
+    const navigate = useNavigate();
     const [formData,setFormdata] = useState<RegisterForm>({
         email:"",
-        Adminkey:"",
+        adminKey:"",
         password:""
     });
     const [error, setError] = useState<string>("");
@@ -28,7 +29,7 @@ const Register: React.FC = () => {
     const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-    if (!formData.email || !formData.password ||!formData.Adminkey) {
+    if (!formData.email || !formData.password || !formData.adminKey) {
       setError("All fields are required");
       return;
     }
@@ -48,10 +49,11 @@ const Register: React.FC = () => {
       }
         console.log("Success", data);
       setError("");
+      navigate("/login");
     } catch (err: any) {
       setError(err.message);
     }
-    }
+  };
     return(
 <div className="flex items-center justify-center min-h-screen px-4">
 
@@ -63,39 +65,36 @@ const Register: React.FC = () => {
         {error && (
           <p className="text-red-600 text-sm font-semibold">{error}</p>
         )}
-
         <input
           type="email"
           name="email"
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-64 sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
           placeholder-gray-500 placeholder:font-serif placeholder:text-lg 
           focus:outline-none focus:ring-2 focus:ring-yellow-900"
         />
         <input
           type="text"
-          name="Adminkey"
-          placeholder="Secreat key"
-          value={formData.Adminkey}
+          name="adminKey"
+          placeholder="Secret key"
+          value={formData.adminKey}
           onChange={handleChange}
-          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-64 sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
           placeholder-gray-500 placeholder:font-serif placeholder:text-lg 
           focus:outline-none focus:ring-2 focus:ring-yellow-900"
         />
-
         <input
           type="password"
           name="password"
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="border-4 border-yellow-800 rounded-3xl p-4 w-[85vw] sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
+          className="border-4 border-yellow-800 rounded-3xl p-4 w-64 sm:w-80 md:w-96 text-yellow-900 placeholder:font-normal font-bold
           placeholder-gray-500 placeholder:font-serif placeholder:text-lg
           focus:outline-none focus:ring-2 focus:ring-yellow-900 "
         />
-
         <button
           type="submit"
           className="w-32 sm:w-40 py-3 sm:py-4
