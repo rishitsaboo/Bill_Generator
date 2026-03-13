@@ -21,7 +21,7 @@ router.get('/items/category/:categoryName', itemController.getItemsByCategory);
 router.post('/add-item',upload.single('image'),itemController.addItem);
 router.delete('/delete-item/:id', itemController.deleteItem);
 router.put('/update-price/:id', itemController.updatePrice);
-
+router.get('/items', itemController.getAllItems);
 
 
 module.exports = router;

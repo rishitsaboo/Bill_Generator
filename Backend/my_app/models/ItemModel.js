@@ -7,6 +7,7 @@ const itemSchema = new mongoose.Schema({
     },
     category:{
         type: String,
+        enum:["Namkeens", "Sweets", "Nasta_Items", "Sabzi", "Others"],
         required: true
     },
     price:{

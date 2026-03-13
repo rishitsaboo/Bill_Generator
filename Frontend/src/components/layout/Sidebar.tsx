@@ -12,7 +12,6 @@ type Props = {
 export default function Sidebar({ isOpen, setIsOpen }: Props) {
   return (
     <>
-    
       {/* Overlay (mobile only) */}
       {isOpen && (
         <div
@@ -71,6 +70,13 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
           >
             <FaBox />
             bill-generator
+          </NavLink>
+          <NavLink
+            to="/add-item"
+            className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
+          >
+            <FaBox />
+            Add Item
           </NavLink>
         </nav>
       </div>

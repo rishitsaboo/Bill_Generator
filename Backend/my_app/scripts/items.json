@@ -1,0 +1,416 @@
+[
+  {
+    "name": "Mathri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1771342194/bill_itmes/cjohenejopxa2lpfdesb.jpg"
+  },
+  {
+    "name": "Mathri (wheat)",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231373/mathri_wheat_aicg1o.jpg"
+  },
+  {
+    "name": "Methi Mathri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231376/methi_mathri_znkadu.jpg"
+  },
+  {
+    "name": "Methi Mathri (wheat)",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231378/methi_mathri_wheat_fh9prb.png"
+  },
+  {
+    "name": "Jeera Mathri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231360/jeera_mathri_b4rfyu.jpg"
+  },
+  {
+    "name": "Chilli-flakes Mathri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231355/chilli_flakes_mathri_e4ulyu.jpg"
+  },
+  {
+    "name": "Normal Nimki",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231377/normal_nimki_wn2jzw.jpg"
+  },
+  {
+    "name": "Masala Nimki",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231367/masala_nimki_frxnxn.jpg"
+  },
+  {
+    "name": "Pudina Nimki",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231383/pudina_nimki_savjwj.jpg"
+  },
+  {
+    "name": "Mathri (black pepper)",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231371/mathri_black_pepper_yakhy7.jpg"
+  },
+  {
+    "name": "Chakri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231352/chakri_aewqzg.jpg"
+  },
+  {
+    "name": "Shakar Para",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231384/shakar_para_imjkao.jpg"
+  },
+  {
+    "name": "Shakar Para (Wheat)",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231388/shakar_para_wheat_aksdrr.jpg"
+  },
+  {
+    "name": "Jira Mitha Puri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231359/Jeera_Puri_Recipe_Kids_School_Snack_-_Copy_jnv7bu.jpg"
+  },
+  {
+    "name": "Besan Ganthiya",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231352/besan_ganthiya_xvfcuz.jpg"
+  },
+  {
+    "name": "Maouli Sev",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231366/maouli_sev_ob9s8w.jpg"
+  },
+  {
+    "name": "Bhujia",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231352/bhujia_rfkc1x.jpg"
+  },
+  {
+    "name": "Chevda (Poha)",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231353/chevda_poha_ysow9z.jpg"
+  },
+  {
+    "name": "Chevda (Corn)",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231353/chevda_corn_y5hwsp.jpg"
+  },
+  {
+    "name": "Dry Kachori",
+    "price": 320,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231356/dry_kachori_xvthjn.jpg"
+  },
+  {
+    "name": "Dry Samosa",
+    "price": 320,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231357/dry_samosa_a8hitd.jpg"
+  },
+  {
+    "name": "Katori (for Katori Chat)",
+    "price": 420,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231363/katori_vc3t5u.jpg"
+  },
+  {
+    "name": "Samosa Papdi",
+    "price": 300,
+    "category": "Namkeens",
+    "image": ""
+  },
+  {
+    "name": "Sev Puri",
+    "price": 300,
+    "category": "Namkeens",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231384/sev_puri_maofv4.jpg"
+  },
+  {
+    "name": "Pyaaz Kachori",
+    "price": 25,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231473/pyaaz_kachori_ohnm8t.jpg"
+  },
+  {
+    "name": "Vadapav",
+    "price": 12,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231484/vadapav_l90gsa.jpg"
+  },
+  {
+    "name": "Butter Vadapav",
+    "price": 15,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231484/vadapav_l90gsa.jpg"
+  },
+  {
+    "name": "Chola Tikki",
+    "price": 70,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231445/chola_tikki_eqtnik.jpg"
+  },
+  {
+    "name": "Pav Bhaji",
+    "price": 70,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231469/pav_bhaji_trtfva.jpg"
+  },
+  {
+    "name": "Samosa",
+    "price": 15,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231476/samosa_qi0pkj.jpg"
+  },
+  {
+    "name": "Kachori",
+    "price": 20,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231462/kachori_imzwdw.jpg"
+  },
+  {
+    "name": "Thepla",
+    "price": 12,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231479/sev_khamni_twczup.jpg"
+  },
+  {
+    "name": "Khaman",
+    "price": 240,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231467/khaman_amxylh.jpg"
+  },
+  {
+    "name": "Sev Khamni",
+    "price": 250,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231479/sev_khamni_twczup.jpg"
+  },
+  {
+    "name": "Daal Baati Churma + Gatte",
+    "price": 250,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231447/daal_baati_churma_gatte_tfwrjy.jpg"
+  },
+  {
+    "name": "Dahi Bade (2Pcs)",
+    "price": 65,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231453/dahi_bade_2pcs_iwwv8e.jpg"
+  },
+  {
+    "name": "Kachori Chaat",
+    "price": 60,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231463/kachori_chaat_tjxmdu.jpg"
+  },
+  {
+    "name": "Daal Pakwan (2Pcs)",
+    "price": 60,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231450/daal_pakwan_2pcs_wd9uhv.jpg"
+  },
+  {
+    "name": "Chole Puri (7Pcs)",
+    "price": 60,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231446/chole_puri_7pcs_ikjygj.jpg"
+  },
+  {
+    "name": "Sabudana Vada (3Pcs)",
+    "price": 60,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231474/sabudana_vada_3pcs_koqz15.jpg"
+  },
+  {
+    "name": "Dabeli",
+    "price": 20,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231451/dabeli_kbiepp.jpg"
+  },
+  {
+    "name": "Idala",
+    "price": 200,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231458/idala_thspsi.jpg"
+  },
+  {
+    "name": "Patra",
+    "price": 250,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231467/khaman_amxylh.jpg"
+  },
+  {
+    "name": "idli sambhar",
+    "price": 60,
+    "category": "Nasta_Items",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231458/idala_thspsi.jpg"
+  },
+  {
+    "name": "Paneer Butter Masala",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231540/paneer_butter_masala_sqvjox.jpg"
+  },
+  {
+    "name": "Palak Paneer",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231536/palak_paneer_ka8upa.jpg"
+  },
+  {
+    "name": "Matar Paneer",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231532/matar_paneer_uiicae.jpg"
+  },
+  {
+    "name": "Kadhai Paneer",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231528/kadhai_paneer_mrvi52.jpg"
+  },
+  {
+    "name": "Paneer Angara",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231539/paneer_angara_kkoon6.jpg"
+  },
+  {
+    "name": "Paneer Tikka",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231543/paneer_tikka_jgo446.jpg"
+  },
+  {
+    "name": "Mix Veg",
+    "price": 400,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231535/mix_veg_kmfinl.jpg"
+  },
+  {
+    "name": "Step Gobi",
+    "price": 400,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231545/step_gobi_pmkp9w.jpg"
+  },
+  {
+    "name": "Dam Aalo",
+    "price": 350,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231525/dam_aalo_waofcd.jpg"
+  },
+  {
+    "name": "Malai Kofta",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231530/malai_kofta_pq7ven.jpg"
+  },
+  {
+    "name": "Dal Makhni",
+    "price": 450,
+    "category": "Sabzi",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231525/dal_makhni_mecjup.jpg"
+  },
+  {
+    "name": "Gulab Jamun (Gits)",
+    "price": 300,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231590/gulab_jamun_gits_kb7rjw.jpg"
+  },
+  {
+    "name": "Khopra Pak (Nariyal Barfi)",
+    "price": 500,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231596/khopra_pak_nariyal_barfi_spv67d.jpg"
+  },
+  {
+    "name": "Nariyal Laddu",
+    "price": 500,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231607/nariyal_laddu_ndz5o5.jpg"
+  },
+  {
+    "name": "Mung Dal Halwa",
+    "price": 650,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231604/mung_dal_halwa_yx3ocl.jpg"
+  },
+  {
+    "name": "Ghewar",
+    "price": 650,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231587/ghewar_vix9gh.jpg"
+  },
+  {
+    "name": "Rabdi Ghewar",
+    "price": 850,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231608/rabdi_ghewar_vynagn.jpg"
+  },
+  {
+    "name": "Gund ke Laddu",
+    "price": 650,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231591/gund_ke_laddu_xo3rar.jpg"
+  },
+  {
+    "name": "Mohan Thal",
+    "price": 650,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231594/instant-mohanthal-500x500_-_Copy_rxyvm4.jpg"
+  },
+  {
+    "name": "Besan Ke Laddu",
+    "price": 650,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231581/besan_ke_laddu_wh9mdx.jpg"
+  },
+  {
+    "name": "Petha",
+    "price": 320,
+    "category": "Sweets",
+    "image": ""
+  },
+  {
+    "name": "Churme ka Laddu",
+    "price": 500,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231586/churme_ka_laddu_nnovbz.jpg"
+  },
+  {
+    "name": "Mawa Rava Ghujiya",
+    "price": 650,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231611/rava_ghujiya_mfskiz.jpg"
+  },
+  {
+    "name": "Rava gujiya",
+    "price": 600,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231599/mawa_rava_ghujiya_-_Copy_ilfcxp.jpg"
+  },
+  {
+    "name": "Boondi",
+    "price": 550,
+    "category": "Sweets",
+    "image": "https://res.cloudinary.com/delsseqms/image/upload/v1773231582/boondi_umvafa.jpg"
+  }
+]

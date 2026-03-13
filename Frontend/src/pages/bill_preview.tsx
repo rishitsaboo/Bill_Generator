@@ -3,6 +3,8 @@ import AddItemModal from "../components/AddItemModalt.tsx";
 import RightSide from "../components/right_side.tsx"
 import html2canvas from "html2canvas";
 import { Search } from "lucide-react";
+import CategortFilter from "../components/filter/CategoryFilter"
+
 
 
 /* ---------------------- Types ---------------------- */

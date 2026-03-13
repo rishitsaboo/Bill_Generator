@@ -6,6 +6,7 @@ import DashBoard from "./pages/dashboard";
 import DashboardLayout from "./components/layout/DashboardLayout"
 import Products from "./pages/products";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AddItem from "./pages/AddItem";
 
 export default function App() {
   return (
@@ -31,6 +32,16 @@ export default function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <Products />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      /> 
+      <Route
+        path="/add-item"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AddItem />
             </DashboardLayout>
           </ProtectedRoute>
         }

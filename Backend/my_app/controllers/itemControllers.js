@@ -1,4 +1,5 @@
-const item = require('../models/ItemModel');
+// Use the Item model consistently
+const Item = require('../models/ItemModel');
 
 exports.deleteItem = async (req, res) => {
     try {
@@ -26,7 +27,7 @@ exports.updatePrice = async (req,res) => {
         const updatedItem = await Item.findByIdAndUpdate(
             itemId,
             { price: price },
-            { returnDocument: 'after' }
+            { new: true } 
         );
         res.json(updatedItem)
     }
@@ -63,4 +64,12 @@ exports.getItemsByCategory = async (req,res) => {
     catch(err){
         res.status(500).json({ error: err.message });
     } 
+};
+exports.getAllItems = async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
