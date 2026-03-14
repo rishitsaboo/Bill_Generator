@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Item = require("../models/billModel")
+const Item = require("../models/ItemModel")
 
 const items = require("./bill.json");
 
@@ -13,6 +13,4 @@ async function seed(){
 
 console.log("done");
 process.exit();
-
 }
-seed()  

@@ -14,10 +14,11 @@ const ItemRow = ({item,onEdit,onDelete} :ItemRowProps) =>{
             <td className="px-4 py-3"> {item.name} </td>
             <td className="px-4 py-3"> {item.price} </td>
             <td className="px-4 py-3"> {item.category} </td>
-            <td>
+            
+            <td className="px-4 py-3 flex items-center gap-2">
                 <button
                 onClick={() => onEdit(item)}
-                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                className=" bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
                 >
                     Edit
                 </button>

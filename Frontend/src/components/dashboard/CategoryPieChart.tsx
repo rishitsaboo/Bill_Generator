@@ -12,8 +12,9 @@ const COLORS = [
 
 const CategoryPieChart = ({ data }: Props) => {
   const chartData = data.map((item) => ({
-    name: item.category,
-    value: item.totalRevenue,
+    // Backward compatibility: some API responses used `_id` instead of `category`
+    name: item.category || (item as any)._id || "Unknown",
+    value: item.totalRevenue ?? (item as any).value ?? 0,
   }));
 
   return (
@@ -28,7 +29,7 @@ const CategoryPieChart = ({ data }: Props) => {
             dataKey="value"
             nameKey="name"
             outerRadius={100}
-            label
+            label={({ name, value }) => `${name}: ${value}`}
             stroke="none"
           >
             {chartData.map((_, index) => (

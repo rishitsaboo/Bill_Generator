@@ -99,12 +99,23 @@ exports.getDashboardData = async (req, res) => {
       });
     }
 
+    // Normalize aggregation results to frontend-friendly shape
+    const formattedCategorySales = categoryData.map(item => ({
+      category: item._id || "Unknown",
+      totalRevenue: item.totalRevenue
+    }));
+
+    const formattedTopSellers = topSellerData.map(item => ({
+      category: item._id || "Unknown",
+      totalQuantity: item.totalQuantity
+    }));
+
     res.json({
       daily: dailyData[0] || { totalSales: 0, totalBills: 0 },
       monthly: monthlyData[0] || { totalSales: 0, totalBills: 0 },
       trend: finalTrend,
-      categorySales: categoryData,
-      topSellers: topSellerData
+      categorySales: formattedCategorySales,
+      topSellers: formattedTopSellers
     });
 
   } catch (err) {

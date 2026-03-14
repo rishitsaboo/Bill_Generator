@@ -22,7 +22,9 @@ const AddItemForm: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [preview, setPreview] = useState<string | null>(null);
 
-  const handelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
     setFormdata((prev) => ({
@@ -90,7 +92,7 @@ const AddItemForm: React.FC = () => {
               type="text"
               name="name"
               placeholder="Item Name"
-              onChange={handelChange}
+              onChange={handleChange}
               className="border p-2 rounded"
             />
 
@@ -98,17 +100,20 @@ const AddItemForm: React.FC = () => {
               type="number"
               name="price"
               placeholder="Price"
-              onChange={handelChange}
+              onChange={handleChange}
               className="border p-2 rounded"
             />
 
-            <input
-              type="text"
+            <select
               name="category"
-              placeholder="Category"
-              onChange={handelChange}
-              className="border p-2 rounded"
-            />
+              onChange={handleChange}
+              className="border p-2 rounded">
+              <option value="">Select Category</option>
+              <option value="Namkeens">Namkeens</option>
+              <option value="Sweets">Sweets</option>
+              <option value="Nasta_Items">Nasta Items</option>
+              <option value="Sabzi">Sabzi</option>
+            </select>
           </div>
 
           {/* Right Side */}
@@ -148,7 +153,7 @@ const AddItemForm: React.FC = () => {
           type="submit"
           className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
         >
-          cancle
+          cancel
         </button>
         </div>
       </form>

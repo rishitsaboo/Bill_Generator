@@ -5,8 +5,9 @@ type Props = { data: TopSeller[] };
 
 const TopItemsBarChart = ({ data }: Props) => {
   const chartData = data.map((item) => ({
-    item: item.category,
-    quantity: item.totalQuantity,
+    // `_id` fallback for older API shape
+    item: item.category || (item as any)._id || "Unknown",
+    quantity: item.totalQuantity ?? (item as any).quantity ?? 0,
   }));
 
   return (
