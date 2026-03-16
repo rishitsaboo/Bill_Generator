@@ -2,7 +2,22 @@
 
 A modern, responsive React + TypeScript web application with Express.js backend for generating and managing bills for Kavita's Kitchen. Built with Vite, Tailwind CSS, MongoDB, and includes authentication, bill generation, and image export capabilities.
 
-## Features
+## Table of Contents 📑
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [API Endpoints](#api-endpoints)
+- [Usage](#usage)
+- [Data Models](#data-models)
+- [Screenshots](#screenshots)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+- [Recent Updates](#recent-updates)
+- [License](#license)
+
+## Features 📈
 
 ### Frontend
 
@@ -26,7 +41,12 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 
 ## Tech Stack
 
-### Frontend
+### Frontend 🖥️
+
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 | Technology | Description |
 |------------|-------------|
@@ -39,7 +59,12 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 | Icons | Lucide React for UI icons |
 | Linting | ESLint with TypeScript support |
 
-### Backend
+### Backend ⚙️
+
+[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com/)
+[![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)](https://mongoosejs.com/)
 
 | Technology | Description |
 |------------|-------------|
@@ -49,74 +74,23 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 | File Upload | Multer with Cloudinary storage |
 | Development | Nodemon for auto-restart |
 
-## Project Structure
+## Project Structure 🗂️
 
 ```
 bill_generater/
-├── Frontend/                         # React Frontend Application
-│   ├── src/
-│   │   ├── api/                     # API modules
-│   │   │   ├── authApi.ts           # Authentication API calls
-│   │   │   ├── axios.ts             # Axios instance configuration
-│   │   │   ├── dashboardApi.ts      # Dashboard analytics API
-│   │   │   └── productApi.ts        # Product CRUD API calls
-│   │   │
-│   │   ├── components/
-│   │   │   ├── AddItemModalt.tsx    # Modal for adding items to bill
-│   │   │   ├── login.tsx            # Login form component
-│   │   │   ├── Register.tsx         # Registration form component
-│   │   │   ├── right_side.tsx       # Right side bill preview component
-│   │   │   ├── dashboard/           # Dashboard components
-│   │   │   │   ├── CategoryPieChart.tsx
-│   │   │   │   ├── SalesChart.tsx
-│   │   │   │   ├── StatCard.tsx
-│   │   │   │   └── TopItemsBarChart.tsx
-│   │   │   ├── layout/              # Layout components
-│   │   │   │   ├── DashboardLayout.tsx
-│   │   │   │   ├── Navbar.tsx
-│   │   │   │   └── Sidebar.tsx
-│   │   │   └── products/            # Product management components
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── bill_preview.tsx    # Main bill generator component
-│   │   │   ├── login_page.tsx      # Login page component
-│   │   │   ├── register_page.tsx    # Registration page component
-│   │   │   ├── dashboard.tsx        # Dashboard analytics page
-│   │   │   └── products.tsx         # Products management page
-│   │   │
-│   │   ├── types/
-│   │   │   └── dashboard.ts         # TypeScript type definitions
-│   │   │
-│   │   ├── App.tsx                  # Root app routing
-│   │   ├── main.tsx                 # Main entry point
-│   │   ├── index.css                # Tailwind directives
-│   │   └── App.css                  # Global styles
-│   │
-│   ├── public/images/               # Product images, logos, QR codes
-│   │   ├── Login/
-│   │   ├── Namkeens/
-│   │   ├── Nasta_Items/
-│   │   ├── right_side/
-│   │   ├── Sabzi/
-│   │   └── Sweets/
-│   │
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   ├── tsconfig.json
-│   ├── tsconfig.app.json
-│   └── tsconfig.node.json
-│
-├── Backend/                          # Express.js Backend
+├── .gitignore
+├── README.md
+├── TODO.md                           # Task tracking for updates
+├── Backend/                          # Express.js Backend API
 │   └── my_app/
+│       ├── index.js                  # Server entry point
+│       ├── package.json
 │       ├── config/
 │       ├── controllers/
-│       │   ├── authControllers.js   # Authentication logic
-│       │   ├── billControllers.js  # Bill operations
-│       │   ├── itemControllers.js  # Item operations
-│       │   └── statsController.js  # Statistics
+│       │   ├── authControllers.js
+│       │   ├── billControllers.js
+│       │   ├── itemControllers.js
+│       │   └── statsController.js
 │       ├── models/
 │       │   ├── Admin.js
 │       │   ├── billModel.js
@@ -126,15 +100,79 @@ bill_generater/
 │       │   ├── billRoutes.js
 │       │   ├── itemRoutes.js
 │       │   └── statsRoutes.js
-│       ├── index.js                 # Entry point
-│       ├── package.json
-│       └── .env                     # Environment variables
-│
-├── .gitignore
-└── README.md
+│       └── scripts/
+│           ├── bill.json
+│           ├── items.json
+│           ├── seedbill.js
+│           └── seedItems.js
+└── Frontend/                         # React + TypeScript Frontend
+    ├── eslint.config.js
+    ├── index.html
+    ├── package.json
+    ├── postcss.config.js
+    ├── tailwind.config.cjs
+    ├── tailwind.config.js
+    ├── tsconfig.app.json
+    ├── tsconfig.json
+    ├── tsconfig.node.json
+    ├── vite.config.ts
+    ├── public/
+    │   └── images/                    # Category-organized product photos
+    │       ├── Login/                 # Auth backgrounds
+    │       ├── Namkeens/
+    │       ├── Nasta_Items/
+    │       ├── right_side/            # Logos, QR
+    │       ├── Sabzi/
+    │       └── Sweets/
+    └── src/
+        ├── App.css
+        ├── App.tsx
+        ├── index.css
+        ├── main.tsx
+        ├── api/                       # API clients
+        │   ├── authApi.ts
+        │   ├── axios.ts
+        │   ├── dashboardApi.ts
+        │   └── productApi.ts
+        ├── components/
+        │   ├── AddItemModalt.tsx
+        │   ├── AddItemModal.tsx
+        │   ├── EditPriceModal.tsx
+        │   ├── ItemRow.tsx
+        │   ├── ItemTable.tsx
+        │   ├── login.tsx
+        │   ├── ProtectedRoute.tsx
+        │   ├── Register.tsx
+        │   ├── right_side.tsx
+        │   ├── filter/
+        │   │   └── CategoryFilter.tsx
+        │   ├── dashboard/
+        │   │   ├── CategoryPieChart.tsx
+        │   │   ├── SalesChart.tsx
+        │   │   ├── StatCard.tsx
+        │   │   └── TopItemsBarChart.tsx
+        │   ├── layout/
+        │   │   ├── DashboardLayout.tsx
+        │   │   ├── Navbar.tsx
+        │   │   └── Sidebar.tsx
+        │   └── products/
+        │       ├── AddItemModal.tsx
+        │       ├── EditPriceModal.tsx
+        │       ├── ItemRow.tsx
+        │       └── ItemTable.tsx
+        ├── pages/
+        │   ├── AddItem.tsx
+        │   ├── bill_preview.tsx
+        │   ├── dashboard.tsx
+        │   ├── login_page.tsx
+        │   ├── products.tsx
+        │   └── register_page.tsx
+        └── types/
+            ├── dashboard.ts
+            └── Item.ts
 ```
 
-## Getting Started
+## Getting Started 🛠️
 
 ### Prerequisites
 
@@ -220,7 +258,7 @@ cd Frontend
 npm run preview
 ```
 
-## API Endpoints
+## API Endpoints 🔌
 
 ### Authentication
 
@@ -253,7 +291,7 @@ npm run preview
 
 - `GET /api/items/category/:categoryName` - Get items filtered by category (used by Quick Bill tabs)
 
-## Usage
+## Usage 💳
 
 1. Login or register an account
 2. Select a category tab; items auto-load from the API
@@ -263,7 +301,7 @@ npm run preview
 6. Click **Generate Bill (JPG)** to save the bill to the server and download an image
 7. Use **Clear** to reset the form
 
-## Data Models
+## Data Models 💾
 
 ### ItemModel
 
@@ -299,12 +337,33 @@ javascript
 }
 ```
 
-## Recent Updates (March 2026)
+## Screenshots 📸
 
-- Dashboard pie chart now shows correct category labels (backend aggregation normalized; frontend handles missing names).
-- Quick Bill page fetches items by category from the API, supports search, handles missing images, and saves bills with proper category mapping.
-- Seed script fix: `seedbill.js` now loads `bill.json` (existing seed data) without missing-file errors.
+![Bill Preview Demo](https://via.placeholder.com/1200x800/4F46E5/FFFFFF?text=Quick+Bill+-+Kavita%27s+Kitchen)
+![Dashboard Analytics](https://via.placeholder.com/1200x400/10B981/FFFFFF?text=Sales+Dashboard)
+![Products Management](https://via.placeholder.com/1200x600/3B82F6/FFFFFF?text=Items+%26+CRUD)
+![Auth Pages](https://via.placeholder.com/1200x800/F59E0B/FFFFFF?text=Login+Register)
 
-## License
+> **Tip**: Take screenshots from running app (`npm run dev` in Frontend/Backend). See `Frontend/public/images/` for product photos used in app.
 
-All rights reserved. Proprietary project.
+## Deployment 🚀
+
+### Frontend (Vercel/Netlify)
+1. `cd Frontend && npm run build`
+2. Deploy the `dist/` folder to Vercel/Netlify (drag-drop or CLI)
+3. Update `src/api/axios.ts` baseURL to your deployed backend (e.g., `https://your-backend.onrender.com/api`)
+
+### Backend (Render/Heroku)
+1. Push code to GitHub
+2. Create app on [Render.com](https://render.com) or Heroku
+3. Set environment variables: `MONGODB_URI`, `JWT_SECRET`, all `CLOUDINARY_*`
+4. Deploy (auto on push)
+
+### Services
+- **Database**: MongoDB Atlas (free M0 cluster)
+- **Storage**: Cloudinary (free plan sufficient)
+
+
+## License 📄
+
+Proprietary project for Kavita's Kitchen. All rights reserved. No open source license.
