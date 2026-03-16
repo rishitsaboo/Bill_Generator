@@ -3,6 +3,8 @@ import { MdDashboard } from "react-icons/md";
 import { FaBox } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { FiX } from "react-icons/fi";
+import { FaFileInvoice } from "react-icons/fa";
+import { FiPlus } from "react-icons/fi";
 
 type Props = {
   isOpen: boolean;
@@ -15,7 +17,7 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
       {/* Overlay (mobile only) */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 md:hidden"
+          className="fixed inset-0 bg-black/40 md:hidden z-40"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -23,15 +25,15 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
       {/* Sidebar */}
       <div
         className={`
-        fixed md:static top-0 left-0 h-full w-64 bg-white shadow-md
+        fixed md:static top-0 left-0 h-full w-64 bg-white shadow-md z-50
         transform transition-transform duration-300
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0
+        md:translate-x-0 font-serif
       `}
       >
 
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b font-serif">
 
           <h2 className="text-xl font-bold">
             Sales Admin
@@ -68,14 +70,14 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
             to="/bill-generator"
             className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
           >
-            <FaBox />
+            <FaFileInvoice/>
             bill-generator
           </NavLink>
           <NavLink
             to="/add-item"
             className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
           >
-            <FaBox />
+            <FiPlus />
             Add Item
           </NavLink>
         </nav>

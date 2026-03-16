@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React from "react";
 interface BillItem {
   id: string;
   name: string;
@@ -8,9 +8,15 @@ interface BillItem {
 
 interface RightSideProps {
   billItems: BillItem[];
+  customerName: string;
+  onCustomerNameChange: (name: string) => void;
 }
 
-const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
+const RightSide: React.FC<RightSideProps> = ({
+  billItems,
+  customerName,
+  onCustomerNameChange
+}) => {
   const total = billItems.reduce((sum, item) => sum + item.amount, 0);
   const now = new Date();
   const date = now.toLocaleDateString("en-IN",{
@@ -18,7 +24,6 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
     month: "short",
     year: "numeric",
   });
-  const [customerName, setCustomerName] = useState<string>("");
   const BASE = import.meta.env.BASE_URL;
   return (
     <div className="flex-1 p-4 overflow-auto">
@@ -26,7 +31,7 @@ const RightSide: React.FC<RightSideProps> = ({ billItems }) => {
       <div className="mb-4 w-full flex justify-center"> 
         <input 
         value={customerName} 
-        onChange={(e) => setCustomerName(e.target.value)} 
+        onChange={(e) => onCustomerNameChange(e.target.value)} 
         className="border border-gray-300 rounded px-3 py-1 w-full sm:w-52" 
         placeholder="Customer Name" /> 
         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link , useNavigate} from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 
 interface RegisterForm {
@@ -50,8 +51,10 @@ const Register: React.FC = () => {
         console.log("Success", data);
       setError("");
       navigate("/login");
+      toast.success("Registration successful");
     } catch (err: any) {
       setError(err.message);
+      toast.error("Registration failed");
     }
   };
     return(

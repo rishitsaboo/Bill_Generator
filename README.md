@@ -13,7 +13,7 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 - **Download as Image**: Export bills as high-quality JPEG images using html2canvas
 - **Responsive Design**: Mobile-friendly interface with Tailwind CSS
 - **User Authentication**: Login/registration system with protected routes using JWT tokens stored in localStorage
-- **Dashboard Analytics**: Visual statistics including sales charts, pie charts, top-selling items bar chart
+- **Dashboard Analytics**: Visual statistics including sales charts, pie charts (shows category labels), top-selling items bar chart
 - **Products Management**: Full CRUD operations for managing product inventory
 
 ### Backend
@@ -243,17 +243,25 @@ npm run preview
 
 ### Statistics
 
-- `GET /api/stats` - Get dashboard statistics
+- `GET /api/stats/dashboard` - Get dashboard statistics (trend, daily/monthly boxes, category pie, top sellers)
+
+### Billing
+
+- `POST /api/generate-bill` - Create a bill (used by Quick Bill page)
+
+### Items (category)
+
+- `GET /api/items/category/:categoryName` - Get items filtered by category (used by Quick Bill tabs)
 
 ## Usage
 
 1. Login or register an account
-2. Select a category to filter items
-3. Add items to the bill
-4. Select quantity type (full/half)
-5. View the bill in real-time
-6. Enter customer name
-7. Download the bill as an image
+2. Select a category tab; items auto-load from the API
+3. Use the search bar to filter items in that category
+4. Click an item, choose quantity type (Kg/Pcs), and add it to the bill (add custom items under “Others”)
+5. View totals live in the right-side preview
+6. Click **Generate Bill (JPG)** to save the bill to the server and download an image
+7. Use **Clear** to reset the form
 
 ## Data Models
 
@@ -265,7 +273,7 @@ javascript
   name: String,
   category: String,
   image: String,
-  amount: Number,
+  price: Number,
   createdAt: Date
 }
 ```
@@ -276,14 +284,26 @@ javascript
 javascript
 {
   customerName: String,
-  items: Array,
-  qtyType: String,
-  quantity: Number,
-  total: Number,
-  grandTotal: Number,
+  items: [
+    {
+      name: String,
+      quantity: Number,
+      price: Number,
+      total: Number,
+      category: String,
+      itemId: ObjectId | null
+    }
+  ],
+  totalAmount: Number,
   createdAt: Date
 }
 ```
+
+## Recent Updates (March 2026)
+
+- Dashboard pie chart now shows correct category labels (backend aggregation normalized; frontend handles missing names).
+- Quick Bill page fetches items by category from the API, supports search, handles missing images, and saves bills with proper category mapping.
+- Seed script fix: `seedbill.js` now loads `bill.json` (existing seed data) without missing-file errors.
 
 ## License
 

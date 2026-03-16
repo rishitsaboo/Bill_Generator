@@ -1,4 +1,6 @@
+import { FiEdit } from "react-icons/fi";
 import type { Item } from "../../types/Item";
+import { MdDelete } from "react-icons/md";
 
 type ItemRowProps = {
     item: Item;
@@ -18,18 +20,20 @@ const ItemRow = ({item,onEdit,onDelete} :ItemRowProps) =>{
             <td className="px-4 py-3 flex items-center gap-2">
                 <button
                 onClick={() => onEdit(item)}
-                className=" bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                className="flex items-center gap-2 shadow-md bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
                 >
+                    <FiEdit />
                     Edit
                 </button>
                 <button
                 onClick={() => onDelete(item._id!)}
-                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                className=" flex items-center gap-2 bg-red-500 shadow-md text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                 >
+                    <MdDelete />
                     Delete
                 </button>
             </td>
-        </tr>
+        </tr>   
             
     )
 }  

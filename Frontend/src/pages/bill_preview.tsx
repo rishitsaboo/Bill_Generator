@@ -5,6 +5,7 @@ import html2canvas from "html2canvas";
 import { Search } from "lucide-react";
 import { getItemsBycategory } from "../api/productApi";
 import type { Item as ApiItem } from "../types/Item";
+import toast from "react-hot-toast";
 
 /* ---------------------- Types ---------------------- */
 
@@ -53,7 +54,7 @@ const categories: Category[] = [
 
 /* ---------------------- Save Bill ---------------------- */
 
-const saveBillToDatabase = async (billItems: BillItem[]) => {
+const saveBillToDatabase = async (billItems: BillItem[], customerName: string) => {
   try {
     const formattedItems = billItems.map((item) => ({
       name: item.name,
@@ -70,7 +71,7 @@ const saveBillToDatabase = async (billItems: BillItem[]) => {
     );
 
     const billData = {
-      customerName: "customer",
+      customerName: customerName.trim() || "Walk-in customer",
       items: formattedItems,
       totalAmount: totalAmount,
     };
@@ -90,8 +91,10 @@ const saveBillToDatabase = async (billItems: BillItem[]) => {
 
     const data = await response.json();
     console.log("Bill saved :", data);
+    toast.success("Bill generated successfully");
   } catch (error) {
     console.error("Error saving bill:", error);
+    toast.error("Failed to generate bill");
   }
 };
 
@@ -112,6 +115,7 @@ function BillGenerator() {
   const [customName, setCustomName] = useState("");
   const [customQty, setCustomQty] = useState("");
   const [customPrice, setCustomPrice] = useState("");
+  const [customerName, setCustomerName] = useState("");
 
   /* ---------------------- Clear Bill ---------------------- */
 
@@ -120,6 +124,7 @@ function BillGenerator() {
     setCustomName("");
     setCustomPrice("");
     setCustomQty("");
+    setCustomerName("");
     setCurrentItem(null);
     setShowModal(false);
   };
@@ -129,7 +134,7 @@ function BillGenerator() {
   const handleGenerateBill = async () => {
     console.log("Generate Bill button clicked");
 
-    await saveBillToDatabase(billItems);
+    await saveBillToDatabase(billItems, customerName);
 
     try {
       const billElement = document.getElementById("bill-preview");
@@ -225,22 +230,12 @@ function BillGenerator() {
   /* ---------------------- UI ---------------------- */
 
   return (
-    <div className="flex flex-col">
-      {/* Header */}
-
-      <div className="h-16 bg-blue-600 text-white flex items-center px-4 shadow-md border-b mb-2">
-        <h1 className="text-xl font-semibold">Quick Bill</h1>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-
+    <div className="h-full " >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-screen">
         {/* LEFT SIDE */}
-
-        <div className="w-full bg-white p-4 border-l">
-
+        <div className="w-full bg-white p-4 ">
           {/* Search */}
-
-          <div className="relative mb-4">
+          <div className="relative ">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
 
             <input
@@ -348,9 +343,13 @@ function BillGenerator() {
         </div>
 
         {/* RIGHT SIDE */}
-
-        <div className="flex-1 border-l border-gray-300 overflow-hidden">
-          <RightSide billItems={billItems} />
+      <div className=" shadow-md rounded bg-white ">
+        <div className="flex-1 overflow-hidden  ">
+          <RightSide
+            billItems={billItems}
+            customerName={customerName}
+            onCustomerNameChange={setCustomerName}
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-4">
             <button
@@ -367,6 +366,7 @@ function BillGenerator() {
               Clear
             </button>
           </div>
+        </div>
         </div>
       </div>
 

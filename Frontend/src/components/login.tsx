@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+
 
 interface LoginForm {
   email: string;
@@ -53,9 +55,11 @@ const Login: React.FC = () => {
         localStorage.setItem("auth_token", data.token);
       }
       setError("");
+      toast.success("Login successful");
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
+      toast.error("Login failed");
     }
   };
 

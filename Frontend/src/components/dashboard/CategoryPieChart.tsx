@@ -2,13 +2,14 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recha
 import type { CategorySale } from "../../types/dashboard";
 
 type Props = { data: CategorySale[] };
-const COLORS = [
-  "#3b82f6",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-];
+const CATEGORY_COLORS: Record<string, string> = {
+  Namkeens: "#3b82f6",
+  Sweets: "#22c55e",
+  Nasta_Items: "#f59e0b",
+  Sabzi: "#ef4444",
+  Others: "#8b5cf6",
+  Unknown: "#94a3b8",
+};
 
 const CategoryPieChart = ({ data }: Props) => {
   const chartData = data.map((item) => ({
@@ -33,7 +34,11 @@ const CategoryPieChart = ({ data }: Props) => {
             stroke="none"
           >
             {chartData.map((_, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              <Cell
+                key = {index}
+                fill={
+                  CATEGORY_COLORS[chartData[index].name] || CATEGORY_COLORS["Unknown"]}
+              />
             ))}
           </Pie>
           <Tooltip />

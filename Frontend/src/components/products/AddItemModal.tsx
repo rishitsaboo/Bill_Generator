@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 interface AddItem {
   name: string;
@@ -71,15 +72,16 @@ const AddItemForm: React.FC = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      toast.success("Product added successfully");
       navigate("/products");
     } catch (error) {
       setError("Failed to add item");
+      toast.error("Failed to add item");
     }
   };
 
   return (
-    <div className="max-w-md font-serif">
+    <div className=" max-w-md font-serif shadow-md p-6 rounded bg-white">
       <h1 className="text-2xl font-bold mb-6">Add New Item</h1>
 
       {error && <p className="text-red-500">{error}</p>}
@@ -93,7 +95,7 @@ const AddItemForm: React.FC = () => {
               name="name"
               placeholder="Item Name"
               onChange={handleChange}
-              className="border p-2 rounded"
+              className="border p-2 rounded border-gray-300"
             />
 
             <input
@@ -101,13 +103,14 @@ const AddItemForm: React.FC = () => {
               name="price"
               placeholder="Price"
               onChange={handleChange}
-              className="border p-2 rounded"
+              className="border p-2 rounded border-gray-300"
             />
 
             <select
               name="category"
               onChange={handleChange}
-              className="border p-2 rounded">
+              className="border p-2 rounded border-gray-300 font-gray-300"
+            >
               <option value="">Select Category</option>
               <option value="Namkeens">Namkeens</option>
               <option value="Sweets">Sweets</option>

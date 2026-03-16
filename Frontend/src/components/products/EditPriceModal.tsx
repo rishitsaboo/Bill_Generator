@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Item } from "../../types/Item";
+import { Toaster } from "react-hot-toast";
 
 
 type EditPriceModalProps = {
@@ -10,7 +11,7 @@ type EditPriceModalProps = {
 
 const EditPriceModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
   const [price, setPrice] = useState(item.price);
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(price);

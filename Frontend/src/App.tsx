@@ -14,7 +14,16 @@ export default function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login_page />} />
       <Route path="/register" element={<Register />} />
-      <Route path="bill-generator" element={<BillGenerator />} />
+      <Route 
+        path="bill-generator" 
+        element={
+          <ProtectedRoute>
+              <DashboardLayout>
+                <BillGenerator />
+              </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/dashboard"
