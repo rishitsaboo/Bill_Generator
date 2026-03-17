@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { getItemsBycategory } from "../api/productApi";
 import type { Item as ApiItem } from "../types/Item";
 import toast from "react-hot-toast";
+const API = import.meta.env.VITE_API_URL;
 
 /* ---------------------- Types ---------------------- */
 
@@ -76,7 +77,7 @@ const saveBillToDatabase = async (billItems: BillItem[], customerName: string) =
       totalAmount: totalAmount,
     };
 
-    const response = await fetch("http://localhost:3000/api/generate-bill", {
+    const response = await fetch(`${API}/generate-bill`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

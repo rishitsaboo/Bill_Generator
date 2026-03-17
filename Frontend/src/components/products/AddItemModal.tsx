@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-hot-toast";
+import API from "../../api/axios";
 
 interface AddItem {
   name: string;
@@ -67,7 +67,7 @@ const AddItemForm: React.FC = () => {
       data.append("category", formData.category);
       data.append("image", formData.image);
 
-      await axios.post("http://localhost:3000/api/add-item", data, {
+      await API.post("/add-item", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -153,7 +153,8 @@ const AddItemForm: React.FC = () => {
           Add Item
         </button>
                 <button
-          type="submit"
+          type="button"
+          onClick={() => navigate("/products")}
           className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
         >
           cancel
