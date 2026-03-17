@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
-
+import toast from "react-hot-toast";
+import { loginUser } from "../api/authApi";
 
 interface LoginForm {
   email: string;
@@ -26,7 +26,6 @@ const Login: React.FC = () => {
     }));
   };
 
-  // handle submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -36,41 +35,28 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await loginUser(formData);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login Failed");
+      if (!data?.token) {
+        throw new Error(data?.message || "Login failed");
       }
 
-      console.log("Success", data);
-      if (data?.token) {
-        localStorage.setItem("auth_token", data.token);
-      }
+      localStorage.setItem("auth_token", data.token);
       setError("");
       toast.success("Login successful");
       navigate("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Login failed");
       toast.error("Login failed");
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
-
       <form
         className="flex flex-col pt-45 gap-5 items-center w-full max-w-md pt-6"
         onSubmit={handleSubmit}
       >
-
         {error && (
           <p className="text-red-600 text-sm font-semibold">{error}</p>
         )}
@@ -112,7 +98,6 @@ const Login: React.FC = () => {
           </h2>
         </Link>
       </form>
-
     </div>
   );
 };

@@ -1,11 +1,24 @@
 import API from "./axios";
 
-export const logiUser  = async(data:any) =>{
-    const response = await API.post("/auth/login",data);
-    return response.data
-}
+type AuthPayload = {
+  email: string;
+  password: string;
+  adminKey?: string;
+};
 
-export const registerUser = async (data: any) => {
+type AuthResponse = {
+  token?: string;
+  message?: string;
+};
+
+export const loginUser = async (data: AuthPayload): Promise<AuthResponse> => {
+  const response = await API.post("/auth/login", data);
+  return response.data;
+};
+
+export const registerUser = async (
+  data: AuthPayload
+): Promise<AuthResponse> => {
   const response = await API.post("/auth/register", data);
   return response.data;
 };

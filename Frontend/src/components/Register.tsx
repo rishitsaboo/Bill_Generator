@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link , useNavigate} from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { registerUser } from "../api/authApi";
 
 
 interface RegisterForm {
@@ -35,19 +36,8 @@ const Register: React.FC = () => {
       return;
     }
     try{
-        const response = await fetch("http://localhost:3000/api/auth/register",{
-            method: "POST",
-            headers:{
-                "content-Type":"application/json",
-            },
-            body:JSON.stringify(formData)
-        });
+        const data = await registerUser(formData);
 
-        const data = await response.json();
-
-        if (!response.ok) {
-        throw new Error(data.message || "Login Failed");
-      }
         console.log("Success", data);
       setError("");
       navigate("/login");
