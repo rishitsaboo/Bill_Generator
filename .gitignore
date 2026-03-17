@@ -100,5 +100,3 @@ Frontend/.env
 Frontend/.env.local
 Frontend/.env.production
 
-# Cloudinary config (may contain secrets)
-Backend/my_app/config/cloudinary.js
