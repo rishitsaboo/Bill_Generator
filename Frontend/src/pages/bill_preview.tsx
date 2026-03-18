@@ -187,7 +187,7 @@ function BillGenerator() {
         id: `custom-${Date.now()}`,
         name: customName,
         qty,
-        amount: unitPrice,
+        amount: unitPrice * qty,
         isCustom: true,
         category: "Custom",
       },
