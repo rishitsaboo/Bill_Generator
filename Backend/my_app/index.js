@@ -13,16 +13,18 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  process.env.FRONTEND_URL,
+  "https://bill-generator-livid.vercel.app",
+  "https://bill-generator-acp77scbq-rishitsaboos-projects.vercel.app",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // mobile apps / curl
-      const isAllowed =
+      const isAllowed = 
         allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
       if (isAllowed) return callback(null, true);
+      console.log("Blocked by CORS:", origin);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
