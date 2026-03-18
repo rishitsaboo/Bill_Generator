@@ -2,21 +2,6 @@
 
 A modern, responsive React + TypeScript web application with Express.js backend for generating and managing bills for Kavita's Kitchen. Built with Vite, Tailwind CSS, MongoDB, and includes authentication, bill generation, and image export capabilities.
 
-## Table of Contents 📑
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [API Endpoints](#api-endpoints)
-- [Usage](#usage)
-- [Data Models](#data-models)
-- [Screenshots](#screenshots)
-- [Deployment](#deployment)
-- [Troubleshooting](#troubleshooting)
-- [Recent Updates](#recent-updates)
-- [License](#license)
-
 ## Features 📈
 
 ### Frontend
