@@ -7,10 +7,17 @@ exports.getDashboardData = async (req, res) => {
     const { year, month, date } = req.query;
 
     const selectedDate = new Date(date || Date.now());
-    const startOfDay = new Date(selectedDate);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(selectedDate);
-    endOfDay.setHours(23, 59, 59, 999);
+
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+
+    const istDate = new Date(selectedDate.getTime() + IST_OFFSET);
+
+    const startOfIST = new Date(istDate);
+    startOfIST.setHours(0, 0, 0, 0);
+
+    const startOfDay = new Date(startOfIST.getTime() - IST_OFFSET);
+    const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000 - 1);
+   
 
     const startOfMonth = new Date(year, month - 1, 1);
     const endOfMonth = new Date(year, month, 1);
