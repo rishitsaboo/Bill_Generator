@@ -9,18 +9,23 @@ exports.getDashboardData = async (req, res) => {
     const selectedDate = new Date(date || Date.now());
 
     const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+    // Convert to IST
+    const ist = new Date(selectedDate.getTime() + IST_OFFSET);
 
-    const istDate = new Date(selectedDate.getTime() + IST_OFFSET);
-
-    const startOfIST = new Date(istDate);
+    // Start of IST day
+    const startOfIST = new Date(ist);
     startOfIST.setHours(0, 0, 0, 0);
 
+    // Convert back to UTC for DB query
     const startOfDay = new Date(startOfIST.getTime() - IST_OFFSET);
     const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000 - 1);
    
+    const istStart = new Date(Date.UTC(year, month - 1, 1));
+    const istEnd = new Date(Date.UTC(year, month, 1));  
 
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 1);
+    const startOfMonth = new Date(istStart.getTime() - IST_OFFSET);
+    const endOfMonth = new Date(istEnd.getTime() - IST_OFFSET);
+
     const daysInMonth = new Date(year, month, 0).getDate();
 
     // 🔥 Run everything parallel (VERY IMPORTANT)
@@ -61,7 +66,7 @@ exports.getDashboardData = async (req, res) => {
         { $match: { date: { $gte: startOfMonth, $lt: endOfMonth } } },
         {
           $group: {
-            _id: { $dayOfMonth: "$date" },
+            _id: { $dayOfMonth: { date: "$date", timezone: "Asia/Kolkata" } },
             totalSales: { $sum: "$totalAmount" }
           }
         }
