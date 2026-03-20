@@ -187,7 +187,7 @@ function BillGenerator() {
         id: `custom-${Date.now()}`,
         name: customName,
         qty,
-        amount: unitPrice * qty,
+        amount: unitPrice, // store unit price; totals are derived
         isCustom: true,
         category: "Custom",
       },
@@ -389,7 +389,7 @@ function BillGenerator() {
                 id: addedItem.id,
                 name: addedItem.name,
                 qty,
-                amount: addedItem.total,
+                amount: addedItem.amount, // store unit price; compute totals later
                 category: addedItem.category,
               },
             ]);

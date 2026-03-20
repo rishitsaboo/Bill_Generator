@@ -3,7 +3,7 @@ interface BillItem {
   id: string;
   name: string;
   qty: number;
-  amount: number;
+  amount: number; // unit price
 }
 
 interface RightSideProps {
@@ -17,7 +17,7 @@ const RightSide: React.FC<RightSideProps> = ({
   customerName,
   onCustomerNameChange
 }) => {
-  const total = billItems.reduce((sum, item) => sum + item.amount, 0);
+  const total = billItems.reduce((sum, item) => sum + item.amount * item.qty, 0);
   const now = new Date();
   const date = now.toLocaleDateString("en-IN",{
     day: "2-digit",
@@ -161,7 +161,7 @@ const RightSide: React.FC<RightSideProps> = ({
               <span style={{paddingLeft:"", fontWeight: 500}}>{item.name}</span>
               <span style={{ textAlign: "center" }}>{item.qty}</span>
               <span style={{ paddingRight:"10px" , textAlign: "right", fontWeight: 600 }}>
-                ₹{item.amount.toFixed(2)}
+                ₹{(item.amount * item.qty).toFixed(2)}
               </span>
             </div>
           ))
