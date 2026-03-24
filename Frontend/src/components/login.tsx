@@ -85,15 +85,13 @@ const Login: React.FC = () => {
           <button
       type="button"
       onClick={() => {
-        setFormData({
-          email: "admin123@gmailcom",
-          password: "admin123",
-        });
+        // setFormData({
+        //   email: "admin123@gmailcom",
+        //   password: "admin123",
+        // });
 
-        setVisible(false);
-
-        setTimeout(() => setShowDemo(false), 500);
-        setError("");
+       
+        navigate("/dashboard");
       }}
       className="bg-blue-500 text-white px-3 py-1 rounded mt-2"
     >
