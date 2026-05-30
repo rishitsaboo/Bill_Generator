@@ -40,14 +40,19 @@ exports.addItem = async (req,res) => {
     try{
         const file = req.file;
 
-        let imageUrl = "";
+        const getStringValue = (value) => typeof value === 'string' && value.trim() ? value.trim() : '';
+
+        let imageUrl = '';
         if (file) {
-            imageUrl = file.path || file.secure_url || file.url || file.filename || "";
+            imageUrl = getStringValue(file.path) || getStringValue(file.secure_url) || getStringValue(file.url) || getStringValue(file.filename);
         }
 
-        // fallback to body fields if frontend sent a URL instead of a file
         if (!imageUrl) {
-            imageUrl = req.body.imageUrl || req.body.image || "";
+            return res.status(400).json({
+                error: 'Image upload failed or missing file',
+                file: file || null,
+                body: req.body
+            });
         }
 
         const newItem = new Item({
@@ -59,7 +64,7 @@ exports.addItem = async (req,res) => {
         await newItem.save();
         res.json(newItem);
     } catch (err) {
-        console.error("addItem error:", err, "file:", req.file);
+        console.error("addItem error:", err, "file:", req.file, "body:", req.body);
         res.status(500).json({ error: err.message, file: req.file || null });
     }
 };
