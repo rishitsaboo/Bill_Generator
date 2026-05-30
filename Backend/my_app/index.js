@@ -1,3 +1,5 @@
+require("dotenv").config();
+const util = require("util");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -6,7 +8,6 @@ const statsRoutes = require("./routes/statsRoutes");
 const billRoutes = require("./routes/billRoutes");
 const authRoutes = require("./routes/authroutes");
 
-require("dotenv").config();
 const app = express();
 
 // CORS configuration - allow local dev, primary frontend, and Vercel/Render previews
@@ -40,6 +41,14 @@ app.use("/api", itemRoutes);
 app.use("/api", billRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use((err, req, res, next) => {
+  console.error("Unhandled Express error:", util.inspect(err, { depth: 5 }));
+  res.status(err.status || 500).json({
+    error: err.message || String(err),
+    stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
+  });
+});
 
 // Start Function
 const PORT = process.env.PORT || 3000;

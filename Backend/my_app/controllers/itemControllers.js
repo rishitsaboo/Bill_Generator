@@ -1,4 +1,5 @@
 // Use the Item model consistently
+const util = require('util');
 const Item = require('../models/ItemModel');
 
 exports.deleteItem = async (req, res) => {
@@ -64,8 +65,10 @@ exports.addItem = async (req,res) => {
         await newItem.save();
         res.json(newItem);
     } catch (err) {
-        console.error("addItem error:", err, "file:", req.file, "body:", req.body);
-        res.status(500).json({ error: err.message, file: req.file || null });
+        console.error("addItem error:", util.inspect(err, { depth: 5 }));
+        console.error("file:", util.inspect(req.file, { depth: 5 }));
+        console.error("body:", util.inspect(req.body, { depth: 5 }));
+        res.status(500).json({ error: err.message || err, file: req.file || null });
     }
 };
 
