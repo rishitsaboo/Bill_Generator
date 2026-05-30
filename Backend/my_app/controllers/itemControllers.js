@@ -38,16 +38,29 @@ exports.updatePrice = async (req,res) => {
 
 exports.addItem = async (req,res) => {
     try{
+        const file = req.file;
+
+        let imageUrl = "";
+        if (file) {
+            imageUrl = file.path || file.secure_url || file.url || file.filename || "";
+        }
+
+        // fallback to body fields if frontend sent a URL instead of a file
+        if (!imageUrl) {
+            imageUrl = req.body.imageUrl || req.body.image || "";
+        }
+
         const newItem = new Item({
             name: req.body.name,
             category: req.body.category,
             price: req.body.price,
-            image: req.file.path
+            image: imageUrl
         });
-        await newItem.save()
-        res.json(newItem);    
-    }catch (err){
-        res.status(500).send(err);
+        await newItem.save();
+        res.json(newItem);
+    } catch (err) {
+        console.error("addItem error:", err, "file:", req.file);
+        res.status(500).json({ error: err.message, file: req.file || null });
     }
 };
 
