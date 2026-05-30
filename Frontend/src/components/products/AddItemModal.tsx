@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import API from "../../api/axios";
+import { addItem } from "../../api/productApi";
 
 interface AddItem {
   name: string;
@@ -67,11 +67,7 @@ const AddItemForm: React.FC = () => {
       data.append("category", formData.category);
       data.append("image", formData.image);
 
-      await API.post("/add-item", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await addItem(data);
       toast.success("Product added successfully");
       navigate("/products");
     } catch (error) {
