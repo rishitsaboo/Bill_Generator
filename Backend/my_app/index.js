@@ -9,20 +9,21 @@ const authRoutes = require("./routes/authroutes");
 require("dotenv").config();
 const app = express();
 
-// CORS configuration - allow local dev, primary frontend, and Vercel previews
+// CORS configuration - allow local dev, primary frontend, and Vercel/Render previews
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "https://bill-generator-livid.vercel.app",
   "https://bill-generator-acp77scbq-rishitsaboos-projects.vercel.app",
+  "https://bill-generator-b90l.onrender.com",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // mobile apps / curl
-      const isAllowed = 
-        allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
+      const isAllowed =
+        allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin) || /\.onrender\.com$/.test(origin);
       if (isAllowed) return callback(null, true);
       console.log("Blocked by CORS:", origin);
       return callback(new Error("Not allowed by CORS"));
