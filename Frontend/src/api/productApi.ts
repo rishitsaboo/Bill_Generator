@@ -10,7 +10,23 @@ export const getItemsBycategory = async (
 };
 
 export const addItem = async (data: FormData) => {
-  return API.post("/add-item", data);
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/add-item`, {
+    method: "POST",
+    body: data,
+  });
+
+  const responseData = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw {
+      response: {
+        status: response.status,
+        data: responseData,
+      },
+    };
+  }
+
+  return { data: responseData };
 };
 
 export const deleteItem = async (id: string) => {

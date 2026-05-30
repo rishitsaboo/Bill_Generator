@@ -65,14 +65,17 @@ const AddItemForm: React.FC = () => {
       data.append("name", formData.name);
       data.append("price", formData.price.toString());
       data.append("category", formData.category);
-      data.append("image", formData.image);
+      data.append("image", formData.image, formData.image.name);
 
       await addItem(data);
       toast.success("Product added successfully");
       navigate("/products");
-    } catch (error) {
-      setError("Failed to add item");
-      toast.error("Failed to add item");
+    } catch (error: unknown) {
+      const message =
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Failed to add item";
+      setError(message);
+      toast.error(message);
     }
   };
 
@@ -120,6 +123,8 @@ const AddItemForm: React.FC = () => {
             <input
               type="file"
               id="imageUpload"
+              name="image"
+              accept="image/jpeg,image/jpg,image/png"
               className="hidden"
               onChange={handleImageChange}
             />

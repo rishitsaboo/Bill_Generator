@@ -17,7 +17,14 @@ const upload = multer({ storage: storage });
 
 // ROUTES
 router.get('/items/category/:categoryName', itemController.getItemsByCategory);
-router.post('/add-item', upload.single('image'), itemController.addItem);
+router.post('/add-item', (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Image upload failed' });
+    }
+    next();
+  });
+}, itemController.addItem);
 router.delete('/delete-item/:id', itemController.deleteItem);
 router.put('/update-price/:id', itemController.updatePrice);
 router.get('/items', itemController.getAllItems);
