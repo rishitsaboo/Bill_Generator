@@ -329,7 +329,6 @@ javascript
 ![Products Management](https://via.placeholder.com/1200x600/3B82F6/FFFFFF?text=Items+%26+CRUD)
 ![Auth Pages](https://via.placeholder.com/1200x800/F59E0B/FFFFFF?text=Login+Register)
 
-> **Tip**: Take screenshots from running app (`npm run dev` in Frontend/Backend). See `Frontend/public/images/` for product photos used in app.
 
 ## Deployment 🚀
 
