@@ -80,6 +80,13 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
             <FiPlus />
             Add Item
           </NavLink>
+          <NavLink
+            to="/bill-history"
+            className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
+          >
+            <FiPlus />
+            Bill History
+          </NavLink>
         </nav>
       </div>
     </>

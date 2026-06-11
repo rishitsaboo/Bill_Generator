@@ -1,7 +1,6 @@
 import API from "./axios";
 import type { Item } from "../types/Item";
 
-// Fetch items in a category, return just the payload (not the full AxiosResponse)
 export const getItemsBycategory = async (
   categoryName: string
 ): Promise<Item[]> => {

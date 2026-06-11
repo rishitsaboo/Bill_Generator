@@ -1,6 +1,6 @@
 # Quick Bill – Bill Generator
 
-A modern, responsive React + TypeScript web application with Express.js backend for generating and managing bills for Kavita's Kitchen. Built with Vite, Tailwind CSS, MongoDB, and includes authentication, bill generation, and image export capabilities.
+A modern, responsive React + TypeScript web application with Express.js backend for generating and managing bills for Kavita's Kitchen. Built with Vite, Tailwind CSS, MongoDB, and includes authentication, bill generation, bill history, and image export capabilities.
 
 ## Features 📈
 
@@ -10,6 +10,7 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 - **Dynamic Bill Generation**: Add/remove items to create custom bills with real-time total calculation
 - **Customer Information**: Input and display customer name on bills
 - **Bill Preview**: Live preview of the formatted bill receipt
+- **Bill History**: View past bills, filter by month, and inspect bill details
 - **Download as Image**: Export bills as high-quality JPEG images using html2canvas
 - **Responsive Design**: Mobile-friendly interface with Tailwind CSS
 - **User Authentication**: Login/registration system with protected routes using JWT tokens stored in localStorage
@@ -23,6 +24,7 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 - **MongoDB Integration**: Data persistence with Mongoose ODM
 - **Cloud Storage**: Cloudinary integration for image uploads
 - **Admin Management**: Admin panel for managing bills, items, and statistics
+- **Bill History API**: CRUD endpoints for retrieving, editing, and deleting past bills
 
 ## Tech Stack
 
@@ -39,6 +41,7 @@ A modern, responsive React + TypeScript web application with Express.js backend 
 | Build Tool | Vite 7 |
 | Styling | Tailwind CSS 4 with PostCSS |
 | Routing | React Router DOM 7 |
+| HTTP Client | Axios |
 | Image Capture | html2canvas for bill export, dom-to-image-more |
 | PDF Generation | html2pdf.js for potential PDF exports |
 | Icons | Lucide React for UI icons |
@@ -70,10 +73,12 @@ bill_generater/
 │   └── my_app/
 │       ├── index.js                  # Server entry point
 │       ├── package.json
+│       ├── .env                      # Backend environment variables (not committed)
 │       ├── config/
 │       ├── controllers/
 │       │   ├── authControllers.js
 │       │   ├── billControllers.js
+│       │   ├── histryController.js
 │       │   ├── itemControllers.js
 │       │   └── statsController.js
 │       ├── models/
@@ -83,6 +88,7 @@ bill_generater/
 │       ├── routes/
 │       │   ├── authroutes.js
 │       │   ├── billRoutes.js
+│       │   ├── historyRoutes.js
 │       │   ├── itemRoutes.js
 │       │   └── statsRoutes.js
 │       └── scripts/
@@ -94,6 +100,7 @@ bill_generater/
     ├── eslint.config.js
     ├── index.html
     ├── package.json
+    ├── .env                          # Frontend environment variables (not committed)
     ├── postcss.config.js
     ├── tailwind.config.cjs
     ├── tailwind.config.js
@@ -101,6 +108,7 @@ bill_generater/
     ├── tsconfig.json
     ├── tsconfig.node.json
     ├── vite.config.ts
+    ├── vercel.json
     ├── public/
     │   └── images/                    # Category-organized product photos
     │       ├── Login/                 # Auth backgrounds
@@ -117,42 +125,26 @@ bill_generater/
         ├── api/                       # API clients
         │   ├── authApi.ts
         │   ├── axios.ts
+        │   ├── billHistory.ts
         │   ├── dashboardApi.ts
         │   └── productApi.ts
         ├── components/
-        │   ├── AddItemModalt.tsx
-        │   ├── AddItemModal.tsx
-        │   ├── EditPriceModal.tsx
-        │   ├── ItemRow.tsx
-        │   ├── ItemTable.tsx
-        │   ├── login.tsx
-        │   ├── ProtectedRoute.tsx
-        │   ├── Register.tsx
-        │   ├── right_side.tsx
-        │   ├── filter/
-        │   │   └── CategoryFilter.tsx
+        │   ├── history/
+        │   │   └── historyMain.tsx
         │   ├── dashboard/
-        │   │   ├── CategoryPieChart.tsx
-        │   │   ├── SalesChart.tsx
-        │   │   ├── StatCard.tsx
-        │   │   └── TopItemsBarChart.tsx
         │   ├── layout/
-        │   │   ├── DashboardLayout.tsx
-        │   │   ├── Navbar.tsx
-        │   │   └── Sidebar.tsx
-        │   └── products/
-        │       ├── AddItemModal.tsx
-        │       ├── EditPriceModal.tsx
-        │       ├── ItemRow.tsx
-        │       └── ItemTable.tsx
+        │   ├── products/
+        │   └── ...
         ├── pages/
         │   ├── AddItem.tsx
+        │   ├── bill_history.tsx
         │   ├── bill_preview.tsx
         │   ├── dashboard.tsx
         │   ├── login_page.tsx
         │   ├── products.tsx
         │   └── register_page.tsx
         └── types/
+            ├── bill.ts
             ├── dashboard.ts
             └── Item.ts
 ```
@@ -161,120 +153,133 @@ bill_generater/
 
 ### Prerequisites
 
-- Node.js v16 or higher
-- MongoDB Atlas instance
+- Node.js v18 or higher
+- MongoDB Atlas instance (or local MongoDB)
 - Cloudinary account for image storage
-- npm or yarn package manager
+- npm package manager
 
 ### Environment Variables
 
-Create a `.env` file in `Backend/my_app/` with the following:
+#### Backend (`Backend/my_app/.env`)
 
-```
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
+```env
+MONGO_URI=your_mongodb_connection_string
+ADMIN_SECRET=your_admin_registration_secret
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+FRONTEND_URL=http://localhost:5173
+PORT=3000
 ```
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MONGO_URI` | Yes | MongoDB connection string |
+| `ADMIN_SECRET` | Yes | Secret key required when registering a new admin |
+| `CLOUDINARY_*` | Yes | Cloudinary credentials for product image uploads |
+| `FRONTEND_URL` | No | Frontend URL used in backend config |
+| `PORT` | No | Server port (defaults to `3000`) |
+
+#### Frontend (`Frontend/.env`)
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_API_URL` | Yes | Base URL for all API requests |
+
+> **Important:** For local development, `VITE_API_URL` must point to your local backend (`http://localhost:3000/api`). Do not point it at a deployed URL unless that backend is running and up to date.
+>
+> After changing `.env`, restart the Vite dev server — env vars are loaded at startup only.
 
 ### Installation
 
-1. **Frontend Setup**
+1. **Frontend setup**
 
 ```bash
 cd Frontend
 npm install
 ```
 
-2. **Backend Setup**
+2. **Backend setup**
 
-```
-bash
+```bash
 cd Backend/my_app
 npm install
 ```
 
 ### Running the Application
 
-1. **Start Frontend** (Available at http://localhost:5173)
+Start both services in separate terminals:
 
-```
-bash
+```bash
+# Terminal 1 — Frontend (http://localhost:5173)
 cd Frontend
 npm run dev
-```
 
-2. **Start Backend** (Available at http://localhost:3000)
-
-```
-bash
+# Terminal 2 — Backend (http://localhost:3000)
 cd Backend/my_app
 npm run dev
 ```
 
-3. **Run Both Services**
+Verify the backend is running:
 
-```
-bash
-# Terminal 1
-cd Frontend && npm run dev
-
-# Terminal 2
-cd Backend/my_app && npm run dev
+```bash
+curl http://localhost:3000/api
+curl http://localhost:3000/api/history
 ```
 
 ### Build for Production
 
-```
-bash
+```bash
 cd Frontend
 npm run build
 ```
 
-This generates a `dist` folder that can be deployed.
+This generates a `dist/` folder that can be deployed.
 
 ### Preview Production Build
 
-```
-bash
+```bash
 cd Frontend
 npm run preview
 ```
 
 ## API Endpoints 🔌
 
+Base URL (local): `http://localhost:3000/api`
+
 ### Authentication
 
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user
+- `POST /api/auth/register` — Register a new admin (requires `adminKey` matching `ADMIN_SECRET`)
+- `POST /api/auth/login` — Login and receive a JWT token
 
 ### Items
 
-- `GET /api/items` - Get all items
-- `POST /api/items` - Create new item
-- `PUT /api/items/:id` - Update item
-- `DELETE /api/items/:id` - Delete item
+- `GET /api/items` — Get all items
+- `GET /api/items/category/:categoryName` — Get items filtered by category
+- `POST /api/add-item` — Create a new item (multipart form with optional image)
+- `PUT /api/update-price/:id` — Update item price
+- `DELETE /api/delete-item/:id` — Delete an item
 
 ### Bills
 
-- `GET /api/bills` - Get all bills
-- `POST /api/bills` - Create new bill
-- `GET /api/bills/:id` - Get specific bill
+- `POST /api/bills` — Create a new bill
+- `POST /api/generate-bill` — Create a new bill (alias used by Quick Bill page)
+
+### Bill History
+
+- `GET /api/history` — Get all bills (sorted by date, newest first)
+- `GET /api/history/:id` — Get a single bill by ID
+- `PUT /api/history/:id` — Update a bill
+- `DELETE /api/history/:id` — Delete a bill
+- `POST /api/history/:id/items` — Add an item to an existing bill
 
 ### Statistics
 
-- `GET /api/stats/dashboard` - Get dashboard statistics (trend, daily/monthly boxes, category pie, top sellers)
-
-### Billing
-
-- `POST /api/generate-bill` - Create a bill (used by Quick Bill page)
-
-### Items (category)
-
-- `GET /api/items/category/:categoryName` - Get items filtered by category (used by Quick Bill tabs)
+- `GET /api/stats/dashboard` — Dashboard statistics (trend, daily/monthly totals, category pie chart, top sellers)
 
 ## Usage 💳
 
@@ -284,14 +289,34 @@ npm run preview
 4. Click an item, choose quantity type (Kg/Pcs), and add it to the bill (add custom items under “Others”)
 5. View totals live in the right-side preview
 6. Click **Generate Bill (JPG)** to save the bill to the server and download an image
-7. Use **Clear** to reset the form
+7. Open **Bill History** from the sidebar to view, filter, and inspect past bills
+8. Use **Clear** to reset the form
+
+## Troubleshooting
+
+### `404` on `/api/history` during local development
+
+1. Confirm the backend is running on port `3000`
+2. Confirm `Frontend/.env` contains:
+   ```env
+   VITE_API_URL=http://localhost:3000/api
+   ```
+3. Restart the frontend dev server after editing `.env`
+4. Test directly: `http://localhost:3000/api/history` should return JSON
+
+### CORS errors
+
+The backend allows `http://localhost:5173` by default. If you use a different frontend port or domain, add it to the `allowedOrigins` array in `Backend/my_app/index.js`.
+
+### Empty Bill History page
+
+Check the browser Network tab — if the request goes to a deployed URL instead of `localhost:3000`, update `VITE_API_URL` and restart Vite.
 
 ## Data Models 💾
 
 ### ItemModel
 
-```
-javascript
+```javascript
 {
   name: String,
   category: String,
@@ -303,8 +328,7 @@ javascript
 
 ### BillModel
 
-```
-javascript
+```javascript
 {
   customerName: String,
   items: [
@@ -318,6 +342,7 @@ javascript
     }
   ],
   totalAmount: Number,
+  date: Date,
   createdAt: Date
 }
 ```
@@ -329,24 +354,46 @@ javascript
 ![Products Management](https://via.placeholder.com/1200x600/3B82F6/FFFFFF?text=Items+%26+CRUD)
 ![Auth Pages](https://via.placeholder.com/1200x800/F59E0B/FFFFFF?text=Login+Register)
 
+<<<<<<< HEAD
+=======
+> **Tip**: Take screenshots from the running app (`npm run dev` in Frontend/Backend). See `Frontend/public/images/` for product photos used in the app.
+>>>>>>> 19eb5e7 (new feature added (Browse and manage monthly invoice records.))
 
 ## Deployment 🚀
 
-### Frontend (Vercel/Netlify)
-1. `cd Frontend && npm run build`
-2. Deploy the `dist/` folder to Vercel/Netlify (drag-drop or CLI)
-3. Update `src/api/axios.ts` baseURL to your deployed backend (e.g., `https://your-backend.onrender.com/api`)
+### Frontend (Vercel / Netlify)
 
-### Backend (Render/Heroku)
+1. Build the app:
+   ```bash
+   cd Frontend && npm run build
+   ```
+2. Deploy the `dist/` folder to Vercel or Netlify
+3. Set the environment variable in your hosting dashboard:
+   ```env
+   VITE_API_URL=https://your-backend.onrender.com/api
+   ```
+4. Redeploy after setting env vars so the build picks them up
+
+### Backend (Render / Heroku)
+
 1. Push code to GitHub
-2. Create app on [Render.com](https://render.com) or Heroku
-3. Set environment variables: `MONGODB_URI`, `JWT_SECRET`, all `CLOUDINARY_*`
-4. Deploy (auto on push)
+2. Create a Web Service on [Render.com](https://render.com) pointing to `Backend/my_app`
+3. Set start command: `npm start`
+4. Set environment variables:
+   - `MONGO_URI`
+   - `ADMIN_SECRET`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+   - `FRONTEND_URL` (your deployed frontend URL)
+5. Deploy (auto on push if connected to GitHub)
+
+> **Note:** After adding new API routes (such as `/api/history`), redeploy the backend so production matches your local code.
 
 ### Services
+
 - **Database**: MongoDB Atlas (free M0 cluster)
 - **Storage**: Cloudinary (free plan sufficient)
-
 
 ## License 📄
 

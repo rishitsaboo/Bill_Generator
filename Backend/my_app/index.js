@@ -7,7 +7,8 @@ const itemRoutes = require("./routes/itemRoutes");
 const statsRoutes = require("./routes/statsRoutes");
 const billRoutes = require("./routes/billRoutes");
 const authRoutes = require("./routes/authroutes");
-
+const historyRoutes = require("./routes/historyRoutes");
+const historyController = require("./controllers/histryController");
 const app = express();
 
 // CORS configuration - allow local dev, primary frontend, and Vercel/Render previews
@@ -42,6 +43,14 @@ app.use("/api", billRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/auth", authRoutes);
 
+app.get("/api", (_req, res) => {
+  res.json({ success: true, message: "API root" });
+});
+
+app.get("/api/history", historyController.getHistoryData);
+app.get("/api/history/:id", historyController.getHistoryBillsById);
+app.use("/api/history", historyRoutes);
+ 
 app.use((err, req, res, next) => {
   console.error("Unhandled Express error:", util.inspect(err, { depth: 5 }));
   res.status(err.status || 500).json({

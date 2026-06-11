@@ -7,7 +7,7 @@ import DashboardLayout from "./components/layout/DashboardLayout"
 import Products from "./pages/products";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AddItem from "./pages/AddItem";
-
+import BillHistoryPage from "./pages/bill_history";
 export default function App() {
   return (
     <Routes>
@@ -24,7 +24,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/dashboard"
         element={
@@ -55,6 +54,16 @@ export default function App() {
           </ProtectedRoute>
         }
       /> 
+      <Route
+        path="/bill-history"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <BillHistoryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

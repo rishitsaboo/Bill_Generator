@@ -12,4 +12,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+async function verifyCloudinaryConfig() {
+  if (missingVars.length) return;
+
+  try {
+    await cloudinary.api.ping();
+    console.log(`Cloudinary connected (cloud: ${process.env.CLOUDINARY_CLOUD_NAME})`);
+  } catch (err) {
+    console.error(
+      `Cloudinary config invalid for cloud "${process.env.CLOUDINARY_CLOUD_NAME}": ${err.message}`
+    );
+    console.error(
+      'Update CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET from https://console.cloudinary.com'
+    );
+  }
+}
+
+verifyCloudinaryConfig();
+
 module.exports = cloudinary;
