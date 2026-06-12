@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { editBill, getBills } from "../../api/billHistory";
+import { deleteBill, editBill, getBills } from "../../api/billHistory";
 import type { billInformation } from "../../types/bill";
 import { Pencil, Trash2, Eye, X } from "lucide-react";
 import { data } from "react-router-dom";
@@ -70,6 +70,27 @@ export default function HistoryMain() {
       year: "numeric",
     });
   };
+
+  const handleDeleteBill = async (billId?: string) => {
+    if (!billId) {
+      window.alert("Unable to delete this bill. Missing bill ID.");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this bill? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await deleteBill(billId);
+      setBills((prevBills) => prevBills.filter((b) => (b._id ?? b.id) !== billId));
+      setFilteredBills((prevFiltered) => prevFiltered.filter((b) => (b._id ?? b.id) !== billId));
+    } catch (error) {
+      console.error("Failed to delete bill:", error);
+      window.alert("Failed to delete bill. Please try again.");
+    }
+  };
+
   const handleItemChange = (
     index: number,
     field: string,
@@ -170,8 +191,11 @@ export default function HistoryMain() {
                         <Pencil size={16} />
                         </button>
 
-                        <button className="text-gray-500 hover:text-red-600">
-                        <Trash2 size={16} />
+                        <button
+                          className="text-gray-500 hover:text-red-600"
+                          onClick={() => handleDeleteBill(bill._id ?? bill.id)}
+                        >
+                          <Trash2 size={16} />
                         </button>
                     </div>
                 </div>

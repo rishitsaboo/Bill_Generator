@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { FiX } from "react-icons/fi";
 import { FaFileInvoice } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
+import { BsClockHistory } from "react-icons/bs";
 
 type Props = {
   isOpen: boolean;
@@ -84,7 +85,7 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
             to="/bill-history"
             className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
           >
-            <FiPlus />
+            <BsClockHistory />
             Bill History
           </NavLink>
         </nav>
