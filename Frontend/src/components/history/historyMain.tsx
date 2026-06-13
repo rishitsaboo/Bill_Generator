@@ -16,11 +16,16 @@ export default function HistoryMain() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1); // 1-based month
   const [filteredBills, setFilteredBills] = useState<Bill[]>([]);
-
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const displayedBills = filteredBills;
+  const billsPerPage = 9;
+  const indexOfFirstBill = (currentPage - 1) * billsPerPage;
+  const indexOfLastBill = indexOfFirstBill + billsPerPage;
+  const currentBills = displayedBills.slice(indexOfFirstBill, indexOfLastBill);
+  const totalPages = Math.ceil(displayedBills.length / billsPerPage);
   useEffect(() => {
     const fetchBills = async () => {
-      try {
+      try { 
         setLoading(true);
         // Comment line below to use real API data
          const data = await getBills();
@@ -54,6 +59,7 @@ export default function HistoryMain() {
         return billDate.getFullYear() === selectedDate.getFullYear() && billDate.getMonth() === selectedDate.getMonth();
       });
       setFilteredBills(filtered);
+      setCurrentPage(1);
     } catch (e) {
       // ignore and keep existing filteredBills on error
     }
@@ -165,56 +171,54 @@ export default function HistoryMain() {
         </div>
       ) : (
         <div className=" bg-gray-50 p-6 rounded-lg shadow-sm ">
+          {currentBills.length === 0 ? (
+            <div className="flex h-64 items-center justify-center text-gray-500">
+              No bills found for the selected month.
+            </div>
+          ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(filteredBills.length ? filteredBills : bills).map((bill) => (
+              {currentBills.map((bill) => (
                 <div
-                key={bill._id ?? bill.id}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col justify-between"
+                  key={bill._id ?? bill.id}
+                  className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col justify-between"
                 >
-                {/* Date */}
-                <div className="flex flex-row flex-wrap items-center justify-between gap-2 bg-white rounded-lg transition-shadow relative group">
+                  {/* Date */}
+                  <div className="flex flex-row flex-wrap items-center justify-between gap-2 bg-white rounded-lg transition-shadow relative group">
                     <div className="min-w-0">
-                        <p className="text-xs text-gray-500 uppercase tracking-wide">
-                        Date
-                        </p>
-                        <p className="text-gray-800 font-medium">
-                        {formatDate(bill.date)}
-                        </p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide">Date</p>
+                      <p className="text-gray-800 font-medium">{formatDate(bill.date)}</p>
                     </div>
-                    <div className="flex items-center justify-end gap-2 mt-0 md:absolute md:top-2 md:right-4 md:opacity-0 md:group-hover:opacity-100 md:transition-opacity">
-                        <button className="text-gray-500 hover:text-blue-500"
-                            onClick={() => {
-                                setSelectedBill(JSON.parse(JSON.stringify(bill)));
-                                setIsEditMode(true);
-                            }}
-                        >
-                        <Pencil size={16} />
-                        </button>
+                    <div className="flex items-center justify-end gap-2 mt-0 md:absolute md:top-2 md:right-4 md:opacity-0 md:group-hover:opacity-100 md:transition-opacity gap-5">
+                      <button
+                        className="text-gray-500 hover:text-blue-500"
+                        onClick={() => {
+                          setSelectedBill(JSON.parse(JSON.stringify(bill)));
+                          setIsEditMode(true);
+                        }}
+                      >
+                        <Pencil size={20} />
+                      </button>
 
-                        <button
-                          className="text-gray-500 hover:text-red-600"
-                          onClick={() => handleDeleteBill(bill._id ?? bill.id)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                      <button
+                        className="text-gray-500 hover:text-red-600"
+                        onClick={() => handleDeleteBill(bill._id ?? bill.id)}
+                      >
+                        <Trash2 size={20} />
+                      </button>
                     </div>
-                </div>
-                <div className="h-0.5 bg-gray-300 w-full my-6"></div>
-                {/* Items Count */}
-                <div className="grid grid-cols-2 gap-1 items-center">
+                  </div>
+                  <div className="h-0.5 bg-gray-300 w-full my-6"></div>
+                  {/* Items Count */}
+                  <div className="grid grid-cols-2 gap-1 items-center">
                     <div>
-                        <p className="text-sm text-gray-600 tracking-wide">
-                            {bill.items.length} Items
-                        </p>
-                        <p className="text-lg font-bold text-gray-900 mt-1">
-                            ₹{bill.totalAmount}
-                        </p>
+                      <p className="text-sm text-gray-600 tracking-wide">{bill.items.length} Items</p>
+                      <p className="text-lg font-bold text-gray-900 mt-1">₹{bill.totalAmount}</p>
                     </div>
                     <div className="flex items-center justify-end">
                       <button
                         onClick={() => {
-                            setSelectedBill(JSON.parse(JSON.stringify(bill)));
-                            setIsEditMode(false);
+                          setSelectedBill(JSON.parse(JSON.stringify(bill)));
+                          setIsEditMode(false);
                         }}
                         className="inline-flex w-full justify-center bg-gray-100 hover:bg-gray-200 border border-gray-300 hover:border-gray-400 text-gray-800 font-medium text-sm py-1.5 px-3 rounded-md items-center gap-2 shadow-sm hover:shadow md:w-auto"
                       >
@@ -222,12 +226,11 @@ export default function HistoryMain() {
                         <span>View Details</span>
                       </button>
                     </div>
+                  </div>
                 </div>
-                {/* View Details Button */}
-                
-                </div>
-            ))}
+              ))}
             </div>
+          )}
         </div>
       )}
 
@@ -268,11 +271,9 @@ export default function HistoryMain() {
                     <th className="px-4 py-3 text-center font-semibold">Qty</th>
                     <th className="px-4 py-3 text-right font-semibold">Price</th>
                     <th className="px-4 py-3 text-right font-semibold">Total</th>
-                    {isEditMode && (<th className="px-4 py-3 text-center">Action</th>
-)}
+                    {isEditMode && (<th className="px-4 py-3 text-center">Action</th>)}
                   </tr>
                 </thead>
-
                 <tbody>
                   {selectedBill.items.map((item, index) => (
                     <tr key={index} className="border-t border-gray-200">
@@ -371,6 +372,41 @@ export default function HistoryMain() {
           </div>
         </div>
       )}
+      <div className="flex justify-center items-center gap-2 mt-8">
+  {/* Previous */}
+  <button
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => prev - 1)}
+    className="w-12 h-12 rounded-lg bg-gray-800 text-white disabled:opacity-50 hover:bg-gray-700"
+  >
+    ❮
+  </button>
+
+  {/* Page Numbers */}
+  {Array.from({ length: totalPages }, (_, index) => (
+    <button
+      key={index}
+      onClick={() => setCurrentPage(index + 1)}
+      className={`w-12 h-12 rounded-lg font-medium transition-all
+        ${
+          currentPage === index + 1
+            ? "bg-white text-black shadow-md border"
+            : "bg-gray-800 text-white hover:bg-gray-700"
+        }`}
+    >
+      {index + 1}
+    </button>
+  ))}
+
+  {/* Next */}
+  <button
+    disabled={currentPage === totalPages}
+    onClick={() => setCurrentPage((prev) => prev + 1)}
+    className="w-12 h-12 rounded-lg bg-red-500 text-white disabled:opacity-50 hover:bg-red-600"
+  >
+    ❯
+  </button>
+</div>
     </div>
   );
 }
