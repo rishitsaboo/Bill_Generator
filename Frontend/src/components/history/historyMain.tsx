@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { deleteBill, editBill, getBills } from "../../api/billHistory";
 import type { billInformation } from "../../types/bill";
 import { Pencil, Trash2, Eye, X } from "lucide-react";
-import { data } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type Bill = billInformation;
 
@@ -17,6 +17,7 @@ export default function HistoryMain() {
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1); // 1-based month
   const [filteredBills, setFilteredBills] = useState<Bill[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  
   const displayedBills = filteredBills;
   const billsPerPage = 9;
   const indexOfFirstBill = (currentPage - 1) * billsPerPage;
@@ -91,9 +92,11 @@ export default function HistoryMain() {
       await deleteBill(billId);
       setBills((prevBills) => prevBills.filter((b) => (b._id ?? b.id) !== billId));
       setFilteredBills((prevFiltered) => prevFiltered.filter((b) => (b._id ?? b.id) !== billId));
+      toast.success("Bill deleted successfully");
     } catch (error) {
       console.error("Failed to delete bill:", error);
       window.alert("Failed to delete bill. Please try again.");
+      toast.error("Failed to delete bill");
     }
   };
 

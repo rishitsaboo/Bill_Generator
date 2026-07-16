@@ -79,7 +79,9 @@ exports.getItemsByCategory = async (req,res) => {
             category: {
                 $regex: new RegExp(categoryName, 'i')
             }
-        });
+        })
+        .collation({ locale: "en", strength: 2 }) // case-insensitive sorting
+        .sort({ name: 1 }); // A → Z
         res.json(items);
     }
     catch(err){
