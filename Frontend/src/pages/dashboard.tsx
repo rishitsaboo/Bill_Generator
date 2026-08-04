@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getDashboardData } from "../api/dashboardApi";
+import { getDashboardData, getTopSellers } from "../api/dashboardApi";
 import type { DashboardData } from "../types/dashboard";
 import StatCard from "../components/dashboard/StatCard";
 import SalesChart from "../components/dashboard/SalesChart";
@@ -12,6 +12,8 @@ export default function DashBoard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // 1-based
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [topSellers, setTopSellers] = useState([]);
 
   useEffect(() => {
     let mounted = true;
@@ -44,6 +46,22 @@ export default function DashBoard() {
       mounted = false;
     };
   }, [selectedMonth]);
+  const fetchTopSellers = async () => {
+  try {
+    const res = await getTopSellers(
+      today.getFullYear(),
+      selectedMonth,
+      selectedCategory
+    );
+
+    setTopSellers(res);
+  } catch (err) {
+    console.log(err);
+  }
+};
+useEffect(() => {
+  fetchTopSellers();
+}, [selectedMonth, selectedCategory]);
 
   if (loading) return <div>Loading dashboard...</div>;
   if (error) return <div>{error}</div>;
@@ -52,7 +70,6 @@ export default function DashBoard() {
   const monthly = data?.monthly ?? { totalSales: 0, totalBills: 0 };
   const trend = Array.isArray(data?.trend) ? data!.trend : [];
   const categorySales = Array.isArray(data?.categorySales) ? data!.categorySales : [];
-  const topSellers = Array.isArray(data?.topSellers) ? data!.topSellers : [];
 
   return (
     <div className="flex flex-col gap-6 ">
@@ -93,9 +110,24 @@ export default function DashBoard() {
         <div className="w-50%">
           <CategoryPieChart data={categorySales} />
         </div>
-        <div>
-          <TopItemsBarChart data={topSellers} />
-        </div>
+<div>
+  <div className="flex justify-end mb-3">
+    <select
+      value={selectedCategory}
+      onChange={(e) => setSelectedCategory(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="All">All</option>
+      <option value="Custom">Custom</option>
+      <option value="Namkeens">Namkeens</option>
+      <option value="Nasta_Items">Nasta_Items</option>
+      <option value="Sabzi">Sabzi</option>
+      <option value="Sweets">Sweets</option>
+    </select>
+  </div>
+
+  <TopItemsBarChart data={topSellers} />
+</div>
       </div>
     </div>
   );

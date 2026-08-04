@@ -1,10 +1,67 @@
 const Bill = require('../models/billModel')
 
+exports.getTopSellers = async (req, res) => {
+  try{
+    const { year, month, category } = req.query;
 
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+
+    const istStart = new Date(Date.UTC(year, month - 1, 1));
+    const istEnd = new Date(Date.UTC(year, month, 1));
+
+    const startOfMonth = new Date(istStart.getTime() - IST_OFFSET);
+    const endOfMonth = new Date(istEnd.getTime() - IST_OFFSET);
+
+    const pipeline = [
+      {
+        $match:{
+          date:{
+            $gte: startOfMonth,
+            $lt: endOfMonth
+          }
+        }
+      },
+      {
+        $unwind: "$items"
+      }
+    ];
+    if (category && category !== "All") {
+      pipeline.push({
+        $match: { "items.category": category }
+      });
+    }
+
+    pipeline.push(
+      {
+        $group: {
+          _id: "$items.name",
+          totalQuantity: { $sum: "$items.quantity" }
+        }
+      },
+      {
+        $sort: { totalQuantity: -1 }
+      },
+      {
+        $limit: 5 
+      }
+    );
+    const topSellerData = await Bill.aggregate(pipeline);
+
+    const formatted = topSellerData.map(item => ({
+      name: item._id,
+      totalQuantity: item.totalQuantity
+    }));
+
+    res.json(formatted);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 exports.getDashboardData = async (req, res) => {
   try {
 
-    const { year, month, date } = req.query;
+    const { year, month, date,category } = req.query;
 
     const selectedDate = new Date(date || Date.now());
 
@@ -88,6 +145,7 @@ exports.getDashboardData = async (req, res) => {
       Bill.aggregate([
         { $match: { date: { $gte: startOfMonth, $lt: endOfMonth } } },
         { $unwind: "$items" },
+        ...(category && category !== "All" ? [{ $match: { "items.category": category } }] : []),
         {
           $group: {
             _id: "$items.name",
@@ -120,7 +178,7 @@ exports.getDashboardData = async (req, res) => {
     }));
 
     const formattedTopSellers = topSellerData.map(item => ({
-      category: item._id || "Unknown",
+      name: item._id || "Unknown",
       totalQuantity: item.totalQuantity
     }));
 

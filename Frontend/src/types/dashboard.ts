@@ -9,7 +9,8 @@ export type CategorySale = {
 };
 
 export type TopSeller={
-   category: string;
+   name: string;
+   category?: string;
    totalQuantity:number;
 };
 

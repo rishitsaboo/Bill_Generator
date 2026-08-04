@@ -3,7 +3,9 @@ const router = express.Router();
 const statsContoller = require('../controllers/statsController');
 
 
+
 router.get('/dashboard',statsContoller.getDashboardData);
+router.get('/dashboard/top-sellers',statsContoller.getTopSellers);
 // router.get('/monthly-sales',statsContoller.getMonthlySales);
 // router.get('/daily-sales',statsContoller.getDailySales);
 // router.get('/get-Monthly-Sales-By-Categories',statsContoller.getMonthlySalesByCategories);

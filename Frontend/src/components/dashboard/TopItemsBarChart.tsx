@@ -1,14 +1,17 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import type { TopSeller } from "../../types/dashboard";
 
-type Props = { data: TopSeller[] };
+type ExtendedTopSeller = TopSeller | { name?: string; category?: string; _id?: string; totalQuantity: number };
+type Props = { data: ExtendedTopSeller[] };
 
 const TopItemsBarChart = ({ data }: Props) => {
-  const chartData = data.map((item) => ({
-    // `_id` fallback for older API shape
-    item: item.category || (item as any)._id || "Unknown",
-    quantity: item.totalQuantity ?? (item as any).quantity ?? 0,
-  }));
+  const chartData = data.map((item) => {
+    const itemName = "name" in item && item.name ? item.name : item.category || (item as any)._id || "Unknown";
+    return {
+      item: itemName,
+      quantity: item.totalQuantity ?? (item as any).quantity ?? 0,
+    };
+  });
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 font-serif">
