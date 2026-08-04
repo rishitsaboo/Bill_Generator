@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import ItemTable from "../components/products/ItemTable";
 import CategoryFilter from "../components/filter/CategoryFilter";
-import EditPriceModal from "../components/products/EditPriceModal";
 import toast from "react-hot-toast";
 import { Search } from "lucide-react";
 
 import type { Item } from "../types/Item";
 import { deleteItem, getItemsBycategory, updateItem } from "../api/productApi";
+import EditItemModal from "../components/products/EditItemModal";
 
 const Products = () => {
   const [category, setCategory] = useState("Namkeens");
@@ -42,24 +42,24 @@ const Products = () => {
     setEditingItem(null);
   };
 
-  const handleSavePrice = async (newPrice: number) => {
+  const handleSaveItem = async (name: string, price: number) => {
     if (!editingItem) return;
 
     try {
-      await updateItem(editingItem._id!, newPrice);
+      await updateItem(editingItem._id!, name, price);
 
       const updatedItems = items.map((item) =>
         item._id === editingItem._id
-          ? { ...item, price: newPrice }
+          ? { ...item, name, price }
           : item
       );
 
       setItems(updatedItems);
       setEditingItem(null);
-      toast.success("Price updated successfully");
+      toast.success("Item updated successfully");
     } catch (error) {
       console.error("Update failed", error);
-      toast.error("Failed to update price");
+      toast.error("Failed to update item");
     }
   };
 
@@ -95,10 +95,10 @@ const Products = () => {
       <ItemTable items={filteredItems} onEdit={handleEdit} onDelete={handleDelete} />
 
       {editingItem && (
-        <EditPriceModal
+        <EditItemModal
           item={editingItem}
           onClose={handleCloseModal}
-          onSave={handleSavePrice}
+          onSave={handleSaveItem}
         />
       )}
     </div>

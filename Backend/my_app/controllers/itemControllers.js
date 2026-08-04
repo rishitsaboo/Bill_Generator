@@ -19,17 +19,23 @@ exports.deleteItem = async (req, res) => {
     }
 };
 
-exports.updatePrice = async (req,res) => {
+exports.updateItem = async (req,res) => {
 
     try{
         const itemId = req.params.id;
-        const { price } = req.body
+        const { name, price } = req.body
 
+        const updatedData = {};
+        if (name !== undefined) updatedData.name = name;
+        if (price !== undefined) updatedData.price = price;
         const updatedItem = await Item.findByIdAndUpdate(
             itemId,
-            { price: price },
-            { new: true } 
+            updatedData,
+            { new: true, runValidators: true } 
         );
+        if (!updatedItem) {
+            return res.status(404).json({ message: "Item not found" });
+        }
         res.json(updatedItem)
     }
     catch(err){

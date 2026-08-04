@@ -26,7 +26,7 @@ router.post('/add-item', (req, res, next) => {
   });
 }, itemController.addItem);
 router.delete('/delete-item/:id', itemController.deleteItem);
-router.put('/update-price/:id', itemController.updatePrice);
+router.put('/update-price/:id', itemController.updateItem);
 router.get('/items', itemController.getAllItems);
 
 module.exports = router;

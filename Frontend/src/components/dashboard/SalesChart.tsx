@@ -5,7 +5,7 @@ type Props = { data: TrendPoint[] };
 const SalesChart = ({data}:Props) =>{
     return(
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 font-serif ">
-            <h2 className="text-lg font-semibold mb-6 text-slate-400">
+            <h2 className="text-lg font-semibold mb-6 text-slate-300">
                 Mounthly Sales Trend
             </h2>
             <ResponsiveContainer width="100%" height={300} >

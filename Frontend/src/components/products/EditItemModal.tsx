@@ -1,28 +1,26 @@
 import { useState } from "react";
 import type { Item } from "../../types/Item";
-import { Toaster } from "react-hot-toast";
-
 
 type EditPriceModalProps = {
   item: Item;
   onClose: () => void;
-  onSave: (price: number) => void;
+  onSave: (name: string, price: number) => Promise<void>;
 };
 
-const EditPriceModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
+const EditItemModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
+  const [name, setName] = useState(item.name);
   const [price, setPrice] = useState(item.price);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(price);
+    await onSave(name, price);
   };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40">
       
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-
         <h2 className="text-xl font-bold mb-4">
-          Edit Price
+          Edit Item 
         </h2>
 
         <p className="text-gray-600 mb-2">
@@ -30,7 +28,12 @@ const EditPriceModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
         </p>
 
         <form onSubmit={handleSubmit}>
-
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="border p-2 w-full rounded mb-4"
+          />
           <input
             type="number"
             value={price}
@@ -65,4 +68,4 @@ const EditPriceModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
   );
 };
 
-export default EditPriceModal;
+export default EditItemModal;
