@@ -32,6 +32,11 @@ export const deleteItem = async (id: string) => {
   return API.delete(`/delete-item/${id}`);
 };
 
-export const updateItem = async (id: string, name: string, price: number) => {
-  return API.put(`/update-price/${id}`, { name, price });
+export const updateItem = async (
+  id: string,
+  name: string,
+  price: number,
+  unit?: "plate" | "piece" | "per/kg"
+) => {
+  return API.put(`/update-price/${id}`, { name, price, unit });
 };

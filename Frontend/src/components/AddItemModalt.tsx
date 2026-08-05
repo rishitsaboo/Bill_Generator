@@ -5,6 +5,7 @@ type Item = {
     name: string;
     image: string;
     amount: number;
+    unit?: "plate" | "piece" | "per/kg";
 };
 
 type AddedItem = Item & {
@@ -13,6 +14,7 @@ type AddedItem = Item & {
     gram?: string;
     pcs?: string;
     total: number;
+    unit?: "plate" | "piece" | "per/kg";
 };
     
 type AddItemModalProps = {
@@ -22,13 +24,14 @@ type AddItemModalProps = {
 };
 
 export default function AddItemModal({ item, onClose, onAdd }: AddItemModalProps) {
-    const [type, setType] = useState("Kg");
+    const qtyType = item.unit === "per/kg" ? "Kg" : "Pcs";
     const [kg, setKg] = useState("");
     const [gram, setGram] = useState("");
     const [pcs, setPcs] = useState("");
+    const countLabel = item.unit === "plate" ? "Plates" : item.unit === "piece" ? "Pieces" : "Count";
 
     const calcTotal = () => {
-        if (type === "Kg") {
+        if (qtyType === "Kg") {
             const kgVal = parseFloat(kg) || 0;
             const gramVal = (parseFloat(gram) || 0) / 1000;
             return (kgVal + gramVal) * item.amount;
@@ -39,14 +42,13 @@ export default function AddItemModal({ item, onClose, onAdd }: AddItemModalProps
 
     const handleAdd = () => {
         onAdd({
-            
             ...item,
-            qtyType: type,
+            qtyType,
             kg,
             gram,
             pcs,
             total: calcTotal(),
-            
+            unit: item.unit,
         });
         onClose();
     };
@@ -57,39 +59,37 @@ export default function AddItemModal({ item, onClose, onAdd }: AddItemModalProps
                 <h2 className="text-2xl font-bold mb-4">{item.name}</h2>
 
                 <div className="block mb-4">
-                    <label className="flex items-center mb-2">
-                        <input 
-                            type="radio" 
-                            value="Kg" 
-                            checked={type === "Kg"}
-                            onChange={(e) => setType(e.target.value)}
-                            className="mr-2"
-                        />
-                        By Kg
-                    </label>
-                    <label className="flex items-center">
-                        <input 
-                            type="radio" 
-                            value="Pcs" 
-                            checked={type === "Pcs"}
-                            onChange={(e) => setType(e.target.value)}
-                            className="mr-2"
-                        />
-                        By Pcs
-                    </label>
+                    <p className="text-sm text-gray-600 mb-2">
+                        Quantity mode: {qtyType} ({item.unit || "piece"})
+                    </p>
                 </div>
 
-                {type === "Kg" ? (
+                {qtyType === "Kg" ? (
                     <div className="space-y-2">
-                        <input type="number" placeholder="Kg" className="border rounded p-2 w-full"
-                            value={kg} onChange={(e) => setKg(e.target.value)} />
-                        <input type="number" placeholder="Gram" className="border rounded p-2 w-full"
-                            value={gram} onChange={(e) => setGram(e.target.value)} />
+                        <input
+                            type="number"
+                            placeholder="Kg"
+                            className="border rounded p-2 w-full"
+                            value={kg}
+                            onChange={(e) => setKg(e.target.value)}
+                        />
+                        <input
+                            type="number"
+                            placeholder="Gram"
+                            className="border rounded p-2 w-full"
+                            value={gram}
+                            onChange={(e) => setGram(e.target.value)}
+                        />
                     </div>
                 ) : (
                     <div className="space-y-2">
-                        <input type="number" placeholder="Pcs" className="border rounded p-2 w-full"
-                            value={pcs} onChange={(e) => setPcs(e.target.value)} />
+                        <input
+                            type="number"
+                            placeholder={countLabel}
+                            className="border rounded p-2 w-full"
+                            value={pcs}
+                            onChange={(e) => setPcs(e.target.value)}
+                        />
                     </div>
                 )}
 

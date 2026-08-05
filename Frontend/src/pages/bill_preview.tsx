@@ -24,6 +24,7 @@ type DisplayItem = {
   amount: number;
   category?: string;
   isCustom?: boolean;
+  unit?: "plate" | "piece" | "per/kg";
 };
 
 type AddedItem = DisplayItem & {
@@ -32,6 +33,7 @@ type AddedItem = DisplayItem & {
   gram?: string;
   pcs?: string;
   total: number;
+  unit?: "plate" | "piece" | "per/kg";
 };
 
 type BillItem = {
@@ -41,6 +43,7 @@ type BillItem = {
   amount: number;
   category?: string;
   isCustom?: boolean;
+  unit?: "plate" | "piece" | "per/kg";
 };
 
 /* ---------------------- Constants ---------------------- */
@@ -64,6 +67,7 @@ const saveBillToDatabase = async (billItems: BillItem[], customerName: string) =
       total: item.qty * item.amount,
       category: item.category || (item.isCustom ? "Custom" : "General"),
       itemId: null,
+      unit: item.unit,
     }));
 
     const totalAmount = formattedItems.reduce(
@@ -190,6 +194,7 @@ function BillGenerator() {
         amount: unitPrice, // store unit price; totals are derived
         isCustom: true,
         category: "Custom",
+        unit: "piece",
       },
     ]);
 
@@ -210,6 +215,7 @@ function BillGenerator() {
         image: item.image || "",
         amount: item.price,
         category: item.category,
+        unit: item.unit,
       }));
 
       setItems(normalized);
@@ -297,6 +303,9 @@ function BillGenerator() {
 
                     <p className="text-center mt-2 font-medium">
                       {item.name}
+                    </p>
+                    <p className="text-center text-sm text-gray-500">
+                      {item.unit}
                     </p>
                   </div>
                 ))}
@@ -391,6 +400,7 @@ function BillGenerator() {
                 qty,
                 amount: addedItem.amount, // store unit price; compute totals later
                 category: addedItem.category,
+                unit: addedItem.unit,
               },
             ]);
 

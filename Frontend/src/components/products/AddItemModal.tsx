@@ -8,6 +8,7 @@ interface AddItem {
   price: number;
   category: string;
   image: File | null;
+  unit: "plate" | "piece" | "per/kg";
 }
 
 const AddItemForm: React.FC = () => {
@@ -18,6 +19,7 @@ const AddItemForm: React.FC = () => {
     price: 0,
     category: "",
     image: null,
+    unit: "plate", // Default unit value
   });
 
   const [error, setError] = useState<string>("");
@@ -66,6 +68,7 @@ const AddItemForm: React.FC = () => {
       data.append("price", formData.price.toString());
       data.append("category", formData.category);
       data.append("image", formData.image, formData.image.name);
+      data.append("unit", formData.unit);
 
       await addItem(data);
       toast.success("Product added successfully");
@@ -104,7 +107,6 @@ const AddItemForm: React.FC = () => {
               onChange={handleChange}
               className="border p-2 rounded border-gray-300"
             />
-
             <select
               name="category"
               onChange={handleChange}
@@ -116,6 +118,17 @@ const AddItemForm: React.FC = () => {
               <option value="Nasta_Items">Nasta Items</option>
               <option value="Sabzi">Sabzi</option>
             </select>
+            <select
+              name="unit"
+              onChange={handleChange}
+              className="border p-2 rounded border-gray-300 font-gray-300"
+            >
+              <option value="">Select Unit</option>
+              <option value="plate">Plate</option>
+              <option value="piece">Piece</option>
+              <option value="per/kg">Per KG</option>
+            </select>
+            
           </div>
 
           {/* Right Side */}

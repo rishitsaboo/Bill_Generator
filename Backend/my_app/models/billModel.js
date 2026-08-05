@@ -21,7 +21,12 @@ const billSchema = new mongoose.Schema({
             category:String,
             price: Number,
             quantity: Number,
-            total: Number
+            total: Number,
+            unit: {
+                type: String,
+                enum:["plate","piece","per/kg"],
+                required: true
+            }
         }
     ],
     totalAmount:{

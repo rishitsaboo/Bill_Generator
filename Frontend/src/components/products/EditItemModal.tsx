@@ -4,16 +4,17 @@ import type { Item } from "../../types/Item";
 type EditPriceModalProps = {
   item: Item;
   onClose: () => void;
-  onSave: (name: string, price: number) => Promise<void>;
+  onSave: (name: string, price: number, unit?: "plate" | "piece" | "per/kg") => Promise<void>;
 };
 
 const EditItemModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
   const [name, setName] = useState(item.name);
   const [price, setPrice] = useState(item.price);
+  const [unit, setUnit] = useState<"plate" | "piece" | "per/kg">(item.unit || "piece");
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSave(name, price);
+    await onSave(name, price, unit);
   };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40">
@@ -40,6 +41,15 @@ const EditItemModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
             onChange={(e) => setPrice(Number(e.target.value))}
             className="border p-2 w-full rounded mb-4"
           />
+          <select
+            value={unit}
+            onChange={(e) => setUnit(e.target.value as "plate" | "piece" | "per/kg")}
+            className="border p-2 w-full rounded mb-4"
+          >
+            <option value="plate">Plate</option>
+            <option value="piece">Piece</option>
+            <option value="per/kg">Per KG</option>
+          </select>
 
           <div className="flex justify-end gap-3">
 

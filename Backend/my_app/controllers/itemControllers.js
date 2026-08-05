@@ -23,15 +23,16 @@ exports.updateItem = async (req,res) => {
 
     try{
         const itemId = req.params.id;
-        const { name, price } = req.body
+        const { name, price, unit } = req.body
 
         const updatedData = {};
         if (name !== undefined) updatedData.name = name;
         if (price !== undefined) updatedData.price = price;
+        if (unit !== undefined) updatedData.unit = unit;
         const updatedItem = await Item.findByIdAndUpdate(
             itemId,
             updatedData,
-            { new: true, runValidators: true } 
+            { returnDocument: "after", runValidators: true } 
         );
         if (!updatedItem) {
             return res.status(404).json({ message: "Item not found" });
@@ -66,7 +67,8 @@ exports.addItem = async (req,res) => {
             name: req.body.name,
             category: req.body.category,
             price: req.body.price,
-            image: imageUrl
+            image: imageUrl,
+            unit: req.body.unit
         });
         await newItem.save();
         res.json(newItem);

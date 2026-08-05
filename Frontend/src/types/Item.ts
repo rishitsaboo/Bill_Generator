@@ -4,4 +4,5 @@ export type Item = {
     price:number,
     category:string,
     image?:string
+    unit: "plate" | "piece" | "per/kg"
 }   

@@ -354,10 +354,7 @@ Check the browser Network tab — if the request goes to a deployed URL instead 
 ![Products Management](https://via.placeholder.com/1200x600/3B82F6/FFFFFF?text=Items+%26+CRUD)
 ![Auth Pages](https://via.placeholder.com/1200x800/F59E0B/FFFFFF?text=Login+Register)
 
-<<<<<<< HEAD
-=======
 > **Tip**: Take screenshots from the running app (`npm run dev` in Frontend/Backend). See `Frontend/public/images/` for product photos used in the app.
->>>>>>> 19eb5e7 (new feature added (Browse and manage monthly invoice records.))
 
 ## Deployment 🚀
 
@@ -365,6 +362,43 @@ Check the browser Network tab — if the request goes to a deployed URL instead 
 
 1. Build the app:
    ```bash
+
+## Units (plate / piece / per/kg)
+
+- Each `Item` document now includes an optional `unit` field. Allowed values: `"plate"`, `"piece"`, `"per/kg"`.
+- Bills store the sold unit per-item so historical records retain how items were sold.
+
+Files touched (frontend & backend):
+- `Backend/my_app/models/ItemModel.js` — schema adds `unit` enum
+- `Backend/my_app/models/billModel.js` — bill item schema includes `unit`
+- `Backend/my_app/controllers/itemControllers.js` — `addItem` and `updateItem` accept and save `unit`
+- `Frontend/src/components/products/AddItemModal.tsx` — `unit` select forwarded in form data
+- `Frontend/src/components/AddItemModalt.tsx` and `Frontend/src/pages/bill_preview.tsx` — unit preserved when adding items to bills
+- `Frontend/src/components/products/EditItemModal.tsx` and `Frontend/src/api/productApi.ts` — edit flow and API include `unit`
+
+Migration / notes:
+- Existing documents without `unit` remain valid; the frontend defaults to a sensible value (e.g. `piece`) when missing.
+- To set a default `unit` for existing items in MongoDB, run a one-time update (example using the `mongo` shell or MongoDB Compass):
+
+```js
+// set missing unit => "piece"
+db.items.updateMany({ unit: { $exists: false } }, { $set: { unit: "piece" } });
+```
+
+- Backend Mongoose warning: some update calls used `new: true`; the modern option is `returnDocument: "after"` to return the updated document (see `Backend/my_app/controllers/itemControllers.js`).
+
+Recommended commit message for these changes:
+
+```
+feat(items): add end-to-end `unit` support (plate/piece/per/kg) and editable unit
+
+- Backend: accept & save `unit` in `addItem` and `updateItem` (`Backend/my_app/controllers/itemControllers.js`)
+- Frontend types: add `unit` to `Item` and bill item types
+- Add item UI: include/forward `unit` from product form; `AddItemModal` auto-selects qty mode based on `unit` and calculates totals
+- Edit flow: `EditItemModal` lets user edit `unit`; `updateItem` API now sends `unit` and `Products` page updates state
+- Billing: `bill_preview` preserves `unit` when normalizing items, when adding to bill, and includes `unit` in payload sent to backend
+```
+
    cd Frontend && npm run build
    ```
 2. Deploy the `dist/` folder to Vercel or Netlify

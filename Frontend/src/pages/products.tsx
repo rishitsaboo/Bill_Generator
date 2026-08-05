@@ -42,15 +42,19 @@ const Products = () => {
     setEditingItem(null);
   };
 
-  const handleSaveItem = async (name: string, price: number) => {
+  const handleSaveItem = async (
+    name: string,
+    price: number,
+    unit?: "plate" | "piece" | "per/kg"
+  ) => {
     if (!editingItem) return;
 
     try {
-      await updateItem(editingItem._id!, name, price);
+      await updateItem(editingItem._id!, name, price, unit);
 
       const updatedItems = items.map((item) =>
         item._id === editingItem._id
-          ? { ...item, name, price }
+          ? { ...item, name, price, unit }
           : item
       );
 

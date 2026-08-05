@@ -18,6 +18,11 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    unit:{
+        type: String,
+        enum:["plate","piece","per/kg"],
+        required: true
+    }
 });
 // Create Model
 
