@@ -1,4 +1,12 @@
 require("dotenv").config();
+
+const requiredEnvVars = ["MONGO_URI", "JWT_SECRET", "ADMIN_SECRET"];
+const missingEnvVars = requiredEnvVars.filter((name) => !process.env[name]);
+if (missingEnvVars.length) {
+  console.error("Missing required environment variables:", missingEnvVars.join(", "));
+  process.exit(1);
+}
+
 const util = require("util");
 const express = require("express");
 const mongoose = require("mongoose");
