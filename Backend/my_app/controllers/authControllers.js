@@ -18,7 +18,7 @@ exports.loginAdmin = async (req,res) => {
         }
         const token = jwt.sign(
             {id:admin._id},
-            "supersecretkey",
+            process.env.JWT_SECRET,
             {expiresIn:"100d"}
         );
         res.json({ token }); 

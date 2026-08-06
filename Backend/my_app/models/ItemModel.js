@@ -22,6 +22,18 @@ const itemSchema = new mongoose.Schema({
         type: String,
         enum:["plate","piece","per/kg"],
         required: true
+    },
+    ingredients: {
+        type: [String],
+        required: false
+    },
+    isAvailable: {
+        type: Boolean,
+        default: true
+    },
+    description: {
+        type: String,
+        required: false
     }
 });
 // Create Model

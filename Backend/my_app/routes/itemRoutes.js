@@ -4,7 +4,8 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 const itemController = require('../controllers/itemControllers');
-
+const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
+  
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -16,8 +17,8 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // ROUTES
-router.get('/items/category/:categoryName', itemController.getItemsByCategory);
-router.post('/add-item', (req, res, next) => {
+router.get('/items/category/:categoryName', verifyToken, verifyAdmin, itemController.getItemsByCategory);
+router.post('/add-item', verifyToken, verifyAdmin, (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
       return res.status(400).json({ error: err.message || 'Image upload failed' });
@@ -25,8 +26,8 @@ router.post('/add-item', (req, res, next) => {
     next();
   });
 }, itemController.addItem);
-router.delete('/delete-item/:id', itemController.deleteItem);
-router.put('/update-price/:id', itemController.updateItem);
-router.get('/items', itemController.getAllItems);
+router.delete('/delete-item/:id', verifyToken, verifyAdmin, itemController.deleteItem);
+router.put('/update-price/:id', verifyToken, verifyAdmin, itemController.updateItem);
+router.get('/items', verifyToken, verifyAdmin, itemController.getAllItems);
 
 module.exports = router;
