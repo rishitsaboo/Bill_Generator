@@ -6,6 +6,10 @@ exports.loginAdmin = async (req,res) => {
     try{
         const { email, password} = req.body;
 
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
         const admin = await Admin.findOne({email});
 
         if (!admin){
@@ -16,14 +20,22 @@ exports.loginAdmin = async (req,res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid password" });
         }
+
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            console.error('Missing JWT_SECRET environment variable');
+            return res.status(500).json({ error: 'Server configuration error: missing JWT secret' });
+        }
+
         const token = jwt.sign(
             {id:admin._id},
-            process.env.JWT_SECRET,
+            jwtSecret,
             {expiresIn:"100d"}
         );
         res.json({ token }); 
     }
     catch (err){
+        console.error('loginAdmin error:', err);
         res.status(500).json({ error: err.message });
     }
 };
