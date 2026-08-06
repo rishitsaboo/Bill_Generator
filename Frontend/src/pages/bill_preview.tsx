@@ -6,7 +6,8 @@ import { Search } from "lucide-react";
 import { getItemsBycategory } from "../api/productApi";
 import type { Item as ApiItem } from "../types/Item";
 import toast from "react-hot-toast";
-const API = import.meta.env.VITE_API_URL;
+import client from "../api/axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 /* ---------------------- Types ---------------------- */
 
@@ -81,20 +82,8 @@ const saveBillToDatabase = async (billItems: BillItem[], customerName: string) =
       totalAmount: totalAmount,
     };
 
-    const response = await fetch(`${API}/generate-bill`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(billData),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Save failed: ${response.status} ${errorText}`);
-    }
-
-    const data = await response.json();
+    const res = await client.post("/generate-bill", billData);
+    const data = res.data;
     console.log("Bill saved :", data);
     toast.success("Bill generated successfully");
   } catch (error) {
