@@ -78,6 +78,7 @@ const saveBillToDatabase = async (billItems: BillItem[], customerName: string) =
       customerName: customerName.trim() || "Walk-in customer",
       items: formattedItems,
       totalAmount: totalAmount,
+      date: new Date().toISOString(),
     };
 
     const res = await client.post("/generate-bill", billData);

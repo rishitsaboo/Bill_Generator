@@ -2,7 +2,7 @@ const Bill = require('../models/billModel.js')
 
 exports.generateBill = async (req,res) => {
     try{
-        const { customerName, items = [] } = req.body;
+        const { customerName, items = [], date } = req.body;
         let totalAmount = 0;
 
         const normalizedItems = items.map((item) => {
@@ -23,7 +23,8 @@ exports.generateBill = async (req,res) => {
         const newBill = new Bill({
             customerName,
             items: normalizedItems,
-            totalAmount: Math.ceil(totalAmount)
+            totalAmount: Math.ceil(totalAmount),
+            date: date ? new Date(date) : new Date(),
         });
         await newBill.save()
         res.status(201).json({
