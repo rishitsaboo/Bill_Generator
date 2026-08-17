@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { deleteBill, editBill, getBills } from "../../api/billHistory";
 import type { billInformation } from "../../types/bill";
 import { Pencil, Trash2, Eye, X } from "lucide-react";
@@ -24,6 +24,29 @@ export default function HistoryMain() {
   const indexOfLastBill = indexOfFirstBill + billsPerPage;
   const currentBills = displayedBills.slice(indexOfFirstBill, indexOfLastBill);
   const totalPages = Math.ceil(displayedBills.length / billsPerPage);
+  const paginationItems = (() => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, index) => index + 1);
+    }
+
+    const pages: Array<number | "ellipsis-start" | "ellipsis-end"> = [1];
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    if (start > 2) pages.push("ellipsis-start");
+    for (let page = start; page <= end; page += 1) pages.push(page);
+    if (end < totalPages - 1) pages.push("ellipsis-end");
+
+    pages.push(totalPages);
+    return pages;
+  })();
+
+  // Keep the page in range whenever the filtered result count changes.
+  useLayoutEffect(() => {
+    const lastValidPage = Math.max(totalPages, 1);
+    setCurrentPage((page) => Math.min(Math.max(page, 1), lastValidPage));
+  }, [totalPages]);
+
   useEffect(() => {
     const fetchBills = async () => {
       try { 
@@ -31,9 +54,6 @@ export default function HistoryMain() {
         // Comment line below to use real API data
          const data = await getBills();
         setBills(data);
-        // initialize filteredBills based on current month selection
-        const initFiltered = data.filter((b) => new Date(b.date).getMonth() + 1 === selectedMonth);
-        setFilteredBills(initFiltered);
       } catch (error) {
         console.error("Failed to fetch bills:", error);
         // Fallback to dummy data on error
@@ -45,28 +65,22 @@ export default function HistoryMain() {
     fetchBills();
   }, []);
 
-  // Filter bills when selectedMonth or bills change. This mirrors the dashboard date safety logic.
+  // Filter bills whenever the selected month or source bill list changes.
   useEffect(() => {
-    let mounted = true;
     try {
       const today = new Date();
       const daysInSelectedMonth = new Date(today.getFullYear(), selectedMonth, 0).getDate();
       const safeDay = Math.min(today.getDate(), daysInSelectedMonth);
       const selectedDate = new Date(today.getFullYear(), selectedMonth - 1, safeDay);
 
-      if (!mounted) return;
       const filtered = bills.filter((b) => {
         const billDate = new Date(b.date);
         return billDate.getFullYear() === selectedDate.getFullYear() && billDate.getMonth() === selectedDate.getMonth();
       });
       setFilteredBills(filtered);
-      setCurrentPage(1);
     } catch (e) {
       // ignore and keep existing filteredBills on error
     }
-    return () => {
-      mounted = false;
-    };
   }, [selectedMonth, bills]);
 
   const formatDate = (dateString: string) => {
@@ -91,7 +105,9 @@ export default function HistoryMain() {
     try {
       await deleteBill(billId);
       setBills((prevBills) => prevBills.filter((b) => (b._id ?? b.id) !== billId));
-      setFilteredBills((prevFiltered) => prevFiltered.filter((b) => (b._id ?? b.id) !== billId));
+      setFilteredBills((prevFiltered) => {
+        return prevFiltered.filter((b) => (b._id ?? b.id) !== billId);
+      });
       toast.success("Bill deleted successfully");
     } catch (error) {
       console.error("Failed to delete bill:", error);
@@ -145,7 +161,10 @@ export default function HistoryMain() {
             <select
               id="month-select"
               value={selectedMonth}
-              onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              onChange={(e) => {
+                setSelectedMonth(Number(e.target.value));
+                setCurrentPage(1);
+              }}
               className="appearance-none rounded-2xl border border-gray-300 bg-white px-4 py-2 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition duration-150 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
               <option value={1}>January</option>
@@ -378,41 +397,53 @@ export default function HistoryMain() {
           </div>
         </div>
       )}
+      {totalPages > 0 && (
       <div className="flex justify-center items-center gap-2 mt-8">
   {/* Previous */}
   <button
-    disabled={currentPage === 1}
+    disabled={currentPage <= 1}
     onClick={() => setCurrentPage((prev) => prev - 1)}
+    aria-label="Previous page"
     className="w-12 h-12 rounded-lg bg-gray-800 text-white disabled:opacity-50 hover:bg-gray-700"
   >
     ❮
   </button>
 
-  {/* Page Numbers */}
-  {Array.from({ length: totalPages }, (_, index) => (
-    <button
-      key={index}
-      onClick={() => setCurrentPage(index + 1)}
-      className={`w-12 h-12 rounded-lg font-medium transition-all
-        ${
-          currentPage === index + 1
-            ? "bg-white text-black shadow-md border"
-            : "bg-gray-800 text-white hover:bg-gray-700"
-        }`}
-    >
-      {index + 1}
-    </button>
-  ))}
+  {/* Page numbers: keep large result sets compact. */}
+  {paginationItems.map((item) =>
+    typeof item === "number" ? (
+      <button
+        key={item}
+        onClick={() => setCurrentPage(item)}
+        aria-label={`Page ${item}`}
+        aria-current={currentPage === item ? "page" : undefined}
+        className={`w-12 h-12 rounded-lg font-medium transition-all
+          ${
+            currentPage === item
+              ? "bg-white text-black shadow-md border"
+              : "bg-gray-800 text-white hover:bg-gray-700"
+          }`}
+      >
+        {item}
+      </button>
+    ) : (
+      <span key={item} className="flex h-12 w-8 items-center justify-center text-gray-500">
+        …
+      </span>
+    )
+  )}
 
   {/* Next */}
   <button
-    disabled={currentPage === totalPages}
+    disabled={currentPage >= totalPages}
     onClick={() => setCurrentPage((prev) => prev + 1)}
+    aria-label="Next page"
     className="w-12 h-12 rounded-lg bg-red-500 text-white disabled:opacity-50 hover:bg-red-600"
   >
     ❯
   </button>
-</div>
+      </div>
+      )}
     </div>
   );
 }
