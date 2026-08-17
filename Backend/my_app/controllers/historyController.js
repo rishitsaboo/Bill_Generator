@@ -3,12 +3,13 @@ const Bill = require('../models/billModel');
 exports.getHistoryData = async (req, res) => {
     try{
         const bills = await Bill.find()
-        .select("customerName date totalAmount items")
-        .sort({ date: -1 });
+        .select("customerName date createdAt totalAmount items")
+        .sort({ createdAt: -1 });
         const formattedBills = bills.map((bill) => ({
             _id: bill._id,
             customerName: bill.customerName,
-            date: bill.date,
+            // New bills use `createdAt`; retain `date` as a fallback for legacy records.
+            date: bill.createdAt || bill.date,
             totalAmount: bill.totalAmount,
             items: bill.items
         }));
