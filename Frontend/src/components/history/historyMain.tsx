@@ -1,69 +1,75 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  deleteBill,
-  editBill,
-  getBills,
-} from "../../api/billHistory";
-
+import { deleteBill, getBills } from "../../api/billHistory";
 import type { billInformation } from "../../types/bill";
-
-import {
-  Pencil,
-  Trash2,
-  Eye,
-  X,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-
+import { Pencil, Trash2, Eye, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-type Bill = billInformation;
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const BILLS_PER_PAGE = 9;
+type Bill = billInformation & {
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+};
 
 export default function HistoryMain() {
-  /* --------------------------------------------------
-     STATE
-  -------------------------------------------------- */
-
-  const currentDate = new Date();
-
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // 1-based month
+  // Current month/year by default
   const [selectedMonth, setSelectedMonth] = useState<number>(
-    currentDate.getMonth() + 1
+    new Date().getMonth() + 1
   );
 
   const [selectedYear, setSelectedYear] = useState<number>(
-    currentDate.getFullYear()
+    new Date().getFullYear()
   );
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  /* --------------------------------------------------
-     FETCH BILLS
-  -------------------------------------------------- */
+  const billsPerPage = 9;
+
+  /*
+   * ---------------------------------------------------------
+   * MONTHS
+   * ---------------------------------------------------------
+   */
+
+  const months = [
+    { value: 1, label: "January" },
+    { value: 2, label: "February" },
+    { value: 3, label: "March" },
+    { value: 4, label: "April" },
+    { value: 5, label: "May" },
+    { value: 6, label: "June" },
+    { value: 7, label: "July" },
+    { value: 8, label: "August" },
+    { value: 9, label: "September" },
+    { value: 10, label: "October" },
+    { value: 11, label: "November" },
+    { value: 12, label: "December" },
+  ];
+
+  /*
+   * ---------------------------------------------------------
+   * YEARS
+   * ---------------------------------------------------------
+   *
+   * Creates a useful year list based on the current year.
+   * You can increase this range if needed.
+   */
+
+  const years = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+
+    return Array.from({ length: 7 }, (_, index) => currentYear - index);
+  }, []);
+
+  /*
+   * ---------------------------------------------------------
+   * FETCH BILLS
+   * ---------------------------------------------------------
+   */
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -72,18 +78,9 @@ export default function HistoryMain() {
 
         const data = await getBills();
 
-        /*
-          Sort newest bills first.
-          This also protects the UI if backend
-          sorting changes later.
-        */
-        const sortedBills = [...data].sort(
-          (a, b) =>
-            new Date(b.date).getTime() -
-            new Date(a.date).getTime()
-        );
+        console.log("Bills received from API:", data);
 
-        setBills(sortedBills);
+        setBills(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to fetch bills:", error);
 
@@ -98,37 +95,46 @@ export default function HistoryMain() {
     fetchBills();
   }, []);
 
-  /* --------------------------------------------------
-     AVAILABLE YEARS
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * GET ACTUAL BILL DATE
+   * ---------------------------------------------------------
+   *
+   * IMPORTANT:
+   *
+   * We prefer createdAt because that represents when the
+   * bill was actually created.
+   *
+   * If createdAt does not exist, we fall back to date.
+   */
 
-  const availableYears = useMemo(() => {
-    const years = new Set<number>();
+  const getBillDate = (bill: Bill): Date | null => {
+    const rawDate = bill.createdAt ?? bill.date;
 
-    // Always include current year
-    years.add(currentDate.getFullYear());
+    if (!rawDate) {
+      return null;
+    }
 
-    // Add years that actually exist in bills
-    bills.forEach((bill) => {
-      const date = new Date(bill.date);
+    const date = new Date(rawDate);
 
-      if (!Number.isNaN(date.getTime())) {
-        years.add(date.getFullYear());
-      }
-    });
+    if (Number.isNaN(date.getTime())) {
+      return null;
+    }
 
-    return Array.from(years).sort((a, b) => b - a);
-  }, [bills]);
+    return date;
+  };
 
-  /* --------------------------------------------------
-     FILTER BILLS BY MONTH + YEAR
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * FILTER BY MONTH + YEAR
+   * ---------------------------------------------------------
+   */
 
   const filteredBills = useMemo(() => {
     return bills.filter((bill) => {
-      const billDate = new Date(bill.date);
+      const billDate = getBillDate(bill);
 
-      if (Number.isNaN(billDate.getTime())) {
+      if (!billDate) {
         return false;
       }
 
@@ -142,27 +148,41 @@ export default function HistoryMain() {
     });
   }, [bills, selectedMonth, selectedYear]);
 
-  /* --------------------------------------------------
-     RESET PAGE WHEN FILTER CHANGES
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * RESET PAGE WHEN MONTH/YEAR CHANGES
+   * ---------------------------------------------------------
+   */
 
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedMonth, selectedYear]);
 
-  /* --------------------------------------------------
-     PAGINATION
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * PAGINATION
+   * ---------------------------------------------------------
+   */
 
   const totalPages = Math.ceil(
-    filteredBills.length / BILLS_PER_PAGE
+    filteredBills.length / billsPerPage
+  );
+
+  const indexOfFirstBill =
+    (currentPage - 1) * billsPerPage;
+
+  const indexOfLastBill =
+    indexOfFirstBill + billsPerPage;
+
+  const currentBills = filteredBills.slice(
+    indexOfFirstBill,
+    indexOfLastBill
   );
 
   /*
-    Safety:
-    If deleting/filtering causes the current page
-    to become invalid, move back to the last page.
-  */
+   * Keep current page valid
+   */
+
   useEffect(() => {
     if (totalPages === 0) {
       setCurrentPage(1);
@@ -174,22 +194,11 @@ export default function HistoryMain() {
     }
   }, [currentPage, totalPages]);
 
-  const currentBills = useMemo(() => {
-    const startIndex =
-      (currentPage - 1) * BILLS_PER_PAGE;
-
-    const endIndex =
-      startIndex + BILLS_PER_PAGE;
-
-    return filteredBills.slice(
-      startIndex,
-      endIndex
-    );
-  }, [filteredBills, currentPage]);
-
-  /* --------------------------------------------------
-     PAGINATION BUTTONS
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * PAGINATION BUTTONS
+   * ---------------------------------------------------------
+   */
 
   const paginationItems = useMemo(() => {
     if (totalPages <= 7) {
@@ -201,13 +210,11 @@ export default function HistoryMain() {
 
     const pages: Array<
       number | "ellipsis-start" | "ellipsis-end"
-    > = [1];
+    > = [];
 
-    const start = Math.max(
-      2,
-      currentPage - 1
-    );
+    pages.push(1);
 
+    const start = Math.max(2, currentPage - 1);
     const end = Math.min(
       totalPages - 1,
       currentPage + 1
@@ -217,11 +224,7 @@ export default function HistoryMain() {
       pages.push("ellipsis-start");
     }
 
-    for (
-      let page = start;
-      page <= end;
-      page++
-    ) {
+    for (let page = start; page <= end; page++) {
       pages.push(page);
     }
 
@@ -232,17 +235,23 @@ export default function HistoryMain() {
     pages.push(totalPages);
 
     return pages;
-  }, [currentPage, totalPages]);
+  }, [totalPages, currentPage]);
 
-  /* --------------------------------------------------
-     DATE FORMAT
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * FORMAT DATE
+   * ---------------------------------------------------------
+   */
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateValue: string | Date | undefined) => {
+    if (!dateValue) {
+      return "Unknown date";
+    }
+
+    const date = new Date(dateValue);
 
     if (Number.isNaN(date.getTime())) {
-      return "Invalid date";
+      return "Unknown date";
     }
 
     return date.toLocaleDateString("en-IN", {
@@ -252,53 +261,31 @@ export default function HistoryMain() {
     });
   };
 
-  /* --------------------------------------------------
-     OPEN VIEW MODAL
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * SELECTED MONTH LABEL
+   * ---------------------------------------------------------
+   */
 
-  const handleViewBill = (bill: Bill) => {
-    setSelectedBill(
-      JSON.parse(JSON.stringify(bill))
-    );
+  const selectedMonthLabel =
+    months.find(
+      (month) => month.value === selectedMonth
+    )?.label ?? "";
 
-    setIsEditMode(false);
-  };
+  /*
+   * ---------------------------------------------------------
+   * DELETE BILL
+   * ---------------------------------------------------------
+   */
 
-  /* --------------------------------------------------
-     OPEN EDIT MODAL
-  -------------------------------------------------- */
-
-  const handleEditBill = (bill: Bill) => {
-    setSelectedBill(
-      JSON.parse(JSON.stringify(bill))
-    );
-
-    setIsEditMode(true);
-  };
-
-  /* --------------------------------------------------
-     CLOSE MODAL
-  -------------------------------------------------- */
-
-  const handleCloseModal = () => {
-    setSelectedBill(null);
-    setIsEditMode(false);
-  };
-
-  /* --------------------------------------------------
-     DELETE BILL
-  -------------------------------------------------- */
-
-  const handleDeleteBill = async (
-    billId?: string
-  ) => {
+  const handleDeleteBill = async (billId?: string) => {
     if (!billId) {
-      toast.error("Bill ID not found");
+      toast.error("Unable to delete bill. Missing bill ID.");
       return;
     }
 
     const confirmed = window.confirm(
-      "Are you sure you want to delete this bill?"
+      "Are you sure you want to delete this bill? This action cannot be undone."
     );
 
     if (!confirmed) {
@@ -315,13 +302,11 @@ export default function HistoryMain() {
         )
       );
 
-      // Close modal if the deleted bill was open
       if (
         selectedBill &&
-        (selectedBill._id ?? selectedBill.id) ===
-          billId
+        (selectedBill._id ?? selectedBill.id) === billId
       ) {
-        handleCloseModal();
+        setSelectedBill(null);
       }
 
       toast.success("Bill deleted successfully");
@@ -335,44 +320,35 @@ export default function HistoryMain() {
     }
   };
 
-  /* --------------------------------------------------
-     CHANGE ITEM
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * HANDLE ITEM CHANGE
+   * ---------------------------------------------------------
+   */
 
   const handleItemChange = (
     index: number,
-    field: "name" | "quantity",
-    value: string
+    field: string,
+    value: string | number
   ) => {
-    if (!selectedBill) return;
+    if (!selectedBill) {
+      return;
+    }
 
     const updatedItems = [...selectedBill.items];
 
-    if (field === "name") {
-      updatedItems[index] = {
-        ...updatedItems[index],
-        name: value,
-      };
-    }
+    updatedItems[index] = {
+      ...updatedItems[index],
+      [field]:
+        field === "name"
+          ? value
+          : Number(value),
+    };
 
-    if (field === "quantity") {
-      const quantity = Math.max(
-        0,
-        Number(value) || 0
-      );
+    updatedItems[index].total =
+      Number(updatedItems[index].price) *
+      Number(updatedItems[index].quantity);
 
-      updatedItems[index] = {
-        ...updatedItems[index],
-        quantity,
-        total:
-          Number(updatedItems[index].price) *
-          quantity,
-      };
-    }
-
-    /*
-      Recalculate entire bill total.
-    */
     const totalAmount = updatedItems.reduce(
       (sum, item) =>
         sum +
@@ -384,181 +360,19 @@ export default function HistoryMain() {
     setSelectedBill({
       ...selectedBill,
       items: updatedItems,
-      totalAmount,
+      totalAmount: Math.ceil(totalAmount),
     });
   };
 
-  /* --------------------------------------------------
-     ADD ITEM WHILE EDITING
-  -------------------------------------------------- */
-
-  const handleAddItem = () => {
-    if (!selectedBill) return;
-
-    const newItem = {
-      name: "",
-      quantity: 1,
-      price: 0,
-      total: 0,
-      unit: "plate" as const,
-    };
-
-    setSelectedBill({
-      ...selectedBill,
-      items: [
-        ...selectedBill.items,
-        newItem,
-      ],
-    });
-  };
-
-  /* --------------------------------------------------
-     REMOVE ITEM WHILE EDITING
-  -------------------------------------------------- */
-
-  const handleRemoveItem = (
-    index: number
-  ) => {
-    if (!selectedBill) return;
-
-    const updatedItems =
-      selectedBill.items.filter(
-        (_, itemIndex) =>
-          itemIndex !== index
-      );
-
-    const totalAmount =
-      updatedItems.reduce(
-        (sum, item) =>
-          sum +
-          Number(item.price) *
-            Number(item.quantity),
-        0
-      );
-
-    setSelectedBill({
-      ...selectedBill,
-      items: updatedItems,
-      totalAmount,
-    });
-  };
-
-  /* --------------------------------------------------
-     SAVE EDITED BILL
-  -------------------------------------------------- */
-
-  const handleSaveBill = async () => {
-    if (!selectedBill) return;
-
-    const billId =
-      selectedBill._id ?? selectedBill.id;
-
-    if (!billId) {
-      toast.error("Bill ID not found");
-      return;
-    }
-
-    try {
-      const normalizedItems =
-        selectedBill.items.map((item) => ({
-          ...item,
-          quantity:
-            Number(item.quantity) || 0,
-          price:
-            Number(item.price) || 0,
-          total:
-            (Number(item.price) || 0) *
-            (Number(item.quantity) || 0),
-        }));
-
-      const totalAmount =
-        normalizedItems.reduce(
-          (sum, item) =>
-            sum + item.total,
-          0
-        );
-
-      const updatedBill: Bill = {
-        ...selectedBill,
-        items: normalizedItems,
-        totalAmount,
-      };
-
-      /*
-        Send the updated bill to backend.
-      */
-      await editBill(
-        billId,
-        {
-          customerName:
-            updatedBill.customerName,
-          items: updatedBill.items,
-          totalAmount:
-            updatedBill.totalAmount,
-        }
-      );
-
-      /*
-        Update local state immediately.
-        No need to reload the page.
-      */
-      setBills((previousBills) =>
-        previousBills.map((bill) =>
-          (bill._id ?? bill.id) === billId
-            ? updatedBill
-            : bill
-        )
-      );
-
-      setSelectedBill(updatedBill);
-      setIsEditMode(false);
-
-      toast.success(
-        "Bill updated successfully"
-      );
-    } catch (error) {
-      console.error(
-        "Failed to update bill:",
-        error
-      );
-
-      toast.error(
-        "Failed to update bill"
-      );
-    }
-  };
-
-  /* --------------------------------------------------
-     MONTH CHANGE
-  -------------------------------------------------- */
-
-  const handleMonthChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedMonth(
-      Number(event.target.value)
-    );
-  };
-
-  /* --------------------------------------------------
-     YEAR CHANGE
-  -------------------------------------------------- */
-
-  const handleYearChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedYear(
-      Number(event.target.value)
-    );
-  };
-
-  /* --------------------------------------------------
-     LOADING
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * LOADING
+   * ---------------------------------------------------------
+   */
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] bg-gray-50 p-6">
+      <div className="mx-auto max-w-screen-xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex h-64 items-center justify-center">
           <p className="text-gray-500">
             Loading bills...
@@ -568,632 +382,383 @@ export default function HistoryMain() {
     );
   }
 
-  /* --------------------------------------------------
-     UI
-  -------------------------------------------------- */
+  /*
+   * ---------------------------------------------------------
+   * UI
+   * ---------------------------------------------------------
+   */
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6 lg:px-8">
 
-      {/* ---------------------------------------------
+      {/* =====================================================
           HEADER
-      --------------------------------------------- */}
+      ====================================================== */}
 
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
 
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Bill History
           </h1>
 
           <p className="mt-1 text-sm text-gray-500">
-            View and manage your bills
+            Browse and manage your bills by month.
           </p>
         </div>
 
+        {/* MONTH + YEAR */}
 
-        {/* MONTH + YEAR FILTER */}
-
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
 
           {/* MONTH */}
 
-          <div>
+          <div className="flex flex-col gap-1">
             <label
-              htmlFor="bill-month"
-              className="mb-1 block text-xs font-medium uppercase tracking-wide text-gray-500"
+              htmlFor="month-select"
+              className="text-xs font-medium uppercase tracking-wide text-gray-500"
             >
               Month
             </label>
 
             <select
-              id="bill-month"
+              id="month-select"
               value={selectedMonth}
-              onChange={handleMonthChange}
-              className="
-                min-w-[150px]
-                rounded-lg
-                border
-                border-gray-300
-                bg-white
-                px-4
-                py-2.5
-                text-sm
-                text-gray-800
-                shadow-sm
-                outline-none
-                transition
-                focus:border-blue-500
-                focus:ring-2
-                focus:ring-blue-100
-              "
+              onChange={(event) => {
+                setSelectedMonth(
+                  Number(event.target.value)
+                );
+                setCurrentPage(1);
+              }}
+              className="min-w-[180px] rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
-              {MONTHS.map(
-                (month, index) => (
-                  <option
-                    key={month}
-                    value={index + 1}
-                  >
-                    {month}
-                  </option>
-                )
-              )}
+              {months.map((month) => (
+                <option
+                  key={month.value}
+                  value={month.value}
+                >
+                  {month.label}
+                </option>
+              ))}
             </select>
           </div>
 
-
           {/* YEAR */}
 
-          <div>
+          <div className="flex flex-col gap-1">
             <label
-              htmlFor="bill-year"
-              className="mb-1 block text-xs font-medium uppercase tracking-wide text-gray-500"
+              htmlFor="year-select"
+              className="text-xs font-medium uppercase tracking-wide text-gray-500"
             >
               Year
             </label>
 
             <select
-              id="bill-year"
+              id="year-select"
               value={selectedYear}
-              onChange={handleYearChange}
-              className="
-                min-w-[120px]
-                rounded-lg
-                border
-                border-gray-300
-                bg-white
-                px-4
-                py-2.5
-                text-sm
-                text-gray-800
-                shadow-sm
-                outline-none
-                transition
-                focus:border-blue-500
-                focus:ring-2
-                focus:ring-blue-100
-              "
+              onChange={(event) => {
+                setSelectedYear(
+                  Number(event.target.value)
+                );
+                setCurrentPage(1);
+              }}
+              className="min-w-[140px] rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
-              {availableYears.map(
-                (year) => (
-                  <option
-                    key={year}
-                    value={year}
-                  >
-                    {year}
-                  </option>
-                )
-              )}
+              {years.map((year) => (
+                <option
+                  key={year}
+                  value={year}
+                >
+                  {year}
+                </option>
+              ))}
             </select>
           </div>
-
         </div>
       </div>
 
+      {/* =====================================================
+          MONTH SUMMARY
+      ====================================================== */}
 
-      {/* ---------------------------------------------
-          SUMMARY
-      --------------------------------------------- */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-slate-900">
+          {selectedMonthLabel} {selectedYear}
+        </h2>
 
-      <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-
-        <div>
-          <h2 className="text-lg font-semibold text-gray-800">
-            {MONTHS[selectedMonth - 1]}{" "}
-            {selectedYear}
-          </h2>
-
-          <p className="text-sm text-gray-500">
-            {filteredBills.length}{" "}
-            {filteredBills.length === 1
-              ? "bill"
-              : "bills"}{" "}
-            found
-          </p>
-        </div>
-
+        <p className="mt-1 text-sm text-gray-500">
+          {filteredBills.length}{" "}
+          {filteredBills.length === 1
+            ? "bill"
+            : "bills"}{" "}
+          found
+        </p>
       </div>
 
-
-      {/* ---------------------------------------------
+      {/* =====================================================
           BILL LIST
-      --------------------------------------------- */}
+      ====================================================== */}
 
-      <div className="rounded-xl bg-gray-50">
+      <div className="rounded-xl bg-gray-50 p-4 shadow-sm sm:p-6">
 
         {currentBills.length === 0 ? (
 
           /* EMPTY STATE */
 
-          <div className="
-            flex
-            min-h-[350px]
-            flex-col
-            items-center
-            justify-center
-            rounded-xl
-            border
-            border-dashed
-            border-gray-300
-            bg-white
-            px-6
-            text-center
-          ">
+          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-6 text-center">
 
-            <div className="
-              mb-4
-              flex
-              h-14
-              w-14
-              items-center
-              justify-center
-              rounded-full
-              bg-gray-100
-              text-2xl
-            ">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-3xl">
               🧾
             </div>
 
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-xl font-semibold text-gray-900">
               No bills found
             </h3>
 
-            <p className="mt-1 max-w-md text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-500">
               There are no bills for{" "}
-              {MONTHS[selectedMonth - 1]}{" "}
+              {selectedMonthLabel}{" "}
               {selectedYear}.
             </p>
-
           </div>
 
         ) : (
 
           /* BILL GRID */
 
-          <div className="
-            grid
-            grid-cols-1
-            gap-6
-            md:grid-cols-2
-            lg:grid-cols-3
-          ">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-            {currentBills.map(
-              (bill) => {
+            {currentBills.map((bill) => {
 
-                const billId =
-                  bill._id ?? bill.id;
+              const billId =
+                bill._id ?? bill.id;
 
-                return (
-                  <div
-                    key={billId}
-                    className="
-                      flex
-                      flex-col
-                      justify-between
-                      rounded-xl
-                      bg-white
-                      p-6
-                      shadow-md
-                      transition
-                      hover:-translate-y-0.5
-                      hover:shadow-lg
-                    "
-                  >
+              const billDate =
+                getBillDate(bill);
 
-                    {/* DATE + ACTIONS */}
+              return (
+                <div
+                  key={billId}
+                  className="group flex flex-col justify-between rounded-xl bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
+                >
 
-                    <div className="
-                      group
-                      relative
-                      flex
-                      items-start
-                      justify-between
-                      gap-3
-                    ">
+                  {/* DATE + ACTIONS */}
 
-                      <div className="min-w-0">
+                  <div className="relative">
 
-                        <p className="
-                          text-xs
-                          uppercase
-                          tracking-wider
-                          text-gray-500
-                        ">
-                          Date
-                        </p>
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-gray-500">
+                        Date
+                      </p>
 
-                        <p className="
-                          mt-1
-                          font-medium
-                          text-gray-900
-                        ">
-                          {formatDate(
-                            bill.date
-                          )}
-                        </p>
-
-                      </div>
-
-
-                      {/* EDIT + DELETE */}
-
-                      <div className="
-                        flex
-                        items-center
-                        gap-3
-                      ">
-
-                        <button
-                          type="button"
-                          title="Edit bill"
-                          onClick={() =>
-                            handleEditBill(
-                              bill
-                            )
-                          }
-                          className="
-                            text-gray-400
-                            transition
-                            hover:text-blue-600
-                          "
-                        >
-                          <Pencil size={18} />
-                        </button>
-
-
-                        <button
-                          type="button"
-                          title="Delete bill"
-                          onClick={() =>
-                            handleDeleteBill(
-                              billId
-                            )
-                          }
-                          className="
-                            text-gray-400
-                            transition
-                            hover:text-red-600
-                          "
-                        >
-                          <Trash2 size={18} />
-                        </button>
-
-                      </div>
-
+                      <p className="mt-1 font-medium text-gray-900">
+                        {formatDate(billDate ?? undefined)}
+                      </p>
                     </div>
 
+                    {/* EDIT / DELETE */}
 
-                    {/* DIVIDER */}
+                    <div className="absolute right-0 top-0 flex gap-4 opacity-0 transition-opacity group-hover:opacity-100">
 
-                    <div className="
-                      my-6
-                      h-px
-                      w-full
-                      bg-gray-200
-                    " />
-
-
-                    {/* BILL INFORMATION */}
-
-                    <div className="
-                      grid
-                      grid-cols-2
-                      items-end
-                      gap-3
-                    ">
-
-                      <div>
-
-                        <p className="
-                          text-sm
-                          text-gray-500
-                        ">
-                          {bill.items.length}{" "}
-                          {bill.items.length === 1
-                            ? "Item"
-                            : "Items"}
-                        </p>
-
-                        <p className="
-                          mt-1
-                          text-xl
-                          font-bold
-                          text-gray-900
-                        ">
-                          ₹
-                          {Number(
-                            bill.totalAmount
-                          ).toFixed(0)}
-                        </p>
-
-                      </div>
-
-
-                      {/* VIEW DETAILS */}
-
-                      <div className="flex justify-end">
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleViewBill(
-                              bill
+                      <button
+                        type="button"
+                        className="text-gray-500 transition hover:text-blue-500"
+                        title="Edit bill"
+                        onClick={() => {
+                          setSelectedBill(
+                            JSON.parse(
+                              JSON.stringify(bill)
                             )
-                          }
-                          className="
-                            inline-flex
-                            items-center
-                            justify-center
-                            gap-2
-                            rounded-lg
-                            border
-                            border-gray-300
-                            bg-white
-                            px-3
-                            py-2
-                            text-sm
-                            font-medium
-                            text-gray-800
-                            shadow-sm
-                            transition
-                            hover:border-gray-400
-                            hover:bg-gray-50
-                          "
-                        >
-                          <Eye size={16} />
+                          );
+                          setIsEditMode(true);
+                        }}
+                      >
+                        <Pencil size={19} />
+                      </button>
 
-                          <span>
-                            View Details
-                          </span>
-
-                        </button>
-
-                      </div>
+                      <button
+                        type="button"
+                        className="text-gray-500 transition hover:text-red-600"
+                        title="Delete bill"
+                        onClick={() =>
+                          handleDeleteBill(
+                            billId
+                          )
+                        }
+                      >
+                        <Trash2 size={19} />
+                      </button>
 
                     </div>
-
                   </div>
-                );
-              }
-            )}
+
+                  {/* DIVIDER */}
+
+                  <div className="my-6 h-px w-full bg-gray-300" />
+
+                  {/* BILL SUMMARY */}
+
+                  <div className="grid grid-cols-2 items-center gap-2">
+
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        {bill.items.length}{" "}
+                        {bill.items.length === 1
+                          ? "Item"
+                          : "Items"}
+                      </p>
+
+                      <p className="mt-1 text-xl font-bold text-gray-900">
+                        ₹
+                        {Number(
+                          bill.totalAmount
+                        ).toFixed(0)}
+                      </p>
+                    </div>
+
+                    {/* VIEW */}
+
+                    <div className="flex justify-end">
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedBill(
+                            JSON.parse(
+                              JSON.stringify(bill)
+                            )
+                          );
+                          setIsEditMode(false);
+                        }}
+                        className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:border-gray-400 hover:bg-gray-200 hover:shadow"
+                      >
+                        <Eye size={15} />
+
+                        <span>
+                          View Details
+                        </span>
+                      </button>
+
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })}
 
           </div>
         )}
 
       </div>
 
-
-      {/* ---------------------------------------------
+      {/* =====================================================
           PAGINATION
-      --------------------------------------------- */}
+      ====================================================== */}
 
       {totalPages > 1 && (
-
-        <div className="
-          mt-8
-          flex
-          flex-wrap
-          items-center
-          justify-center
-          gap-2
-        ">
+        <div className="mt-8 flex items-center justify-center gap-2">
 
           {/* PREVIOUS */}
 
           <button
             type="button"
-            disabled={
-              currentPage === 1
-            }
+            disabled={currentPage <= 1}
             onClick={() =>
               setCurrentPage(
-                (page) =>
+                (previous) =>
                   Math.max(
-                    1,
-                    page - 1
+                    previous - 1,
+                    1
                   )
               )
             }
-            className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-gray-300
-              bg-white
-              text-gray-700
-              shadow-sm
-              transition
-              hover:bg-gray-100
-              disabled:cursor-not-allowed
-              disabled:opacity-40
-            "
             aria-label="Previous page"
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-800 text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ChevronLeft size={18} />
+            ❮
           </button>
-
 
           {/* PAGE NUMBERS */}
 
-          {paginationItems.map(
-            (item) => {
+          {paginationItems.map((item) => {
 
-              if (
-                item ===
-                  "ellipsis-start" ||
-                item ===
-                  "ellipsis-end"
-              ) {
-                return (
-                  <span
-                    key={item}
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      items-center
-                      justify-center
-                      text-gray-400
-                    "
-                  >
-                    ...
-                  </span>
-                );
-              }
-
+            if (typeof item !== "number") {
               return (
-                <button
+                <span
                   key={item}
-                  type="button"
-                  onClick={() =>
-                    setCurrentPage(
-                      item
-                    )
-                  }
-                  aria-current={
-                    currentPage === item
-                      ? "page"
-                      : undefined
-                  }
-                  className={`
-                    flex
-                    h-10
-                    min-w-10
-                    items-center
-                    justify-center
-                    rounded-lg
-                    px-3
-                    text-sm
-                    font-medium
-                    transition
-                    ${
-                      currentPage ===
-                      item
-                        ? "bg-gray-900 text-white shadow-sm"
-                        : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
-                    }
-                  `}
+                  className="flex h-10 w-8 items-center justify-center text-gray-500"
                 >
-                  {item}
-                </button>
+                  …
+                </span>
               );
             }
-          )}
 
+            return (
+              <button
+                type="button"
+                key={item}
+                onClick={() =>
+                  setCurrentPage(item)
+                }
+                aria-label={`Page ${item}`}
+                aria-current={
+                  currentPage === item
+                    ? "page"
+                    : undefined
+                }
+                className={`flex h-10 w-10 items-center justify-center rounded-lg font-medium transition ${
+                  currentPage === item
+                    ? "border bg-white text-black shadow-md"
+                    : "bg-gray-800 text-white hover:bg-gray-700"
+                }`}
+              >
+                {item}
+              </button>
+            );
+          })}
 
           {/* NEXT */}
 
           <button
             type="button"
             disabled={
-              currentPage === totalPages
+              currentPage >= totalPages
             }
             onClick={() =>
               setCurrentPage(
-                (page) =>
+                (previous) =>
                   Math.min(
-                    totalPages,
-                    page + 1
+                    previous + 1,
+                    totalPages
                   )
               )
             }
-            className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-gray-300
-              bg-white
-              text-gray-700
-              shadow-sm
-              transition
-              hover:bg-gray-100
-              disabled:cursor-not-allowed
-              disabled:opacity-40
-            "
             aria-label="Next page"
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500 text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ChevronRight size={18} />
+            ❯
           </button>
 
         </div>
-
       )}
 
-
-      {/* ---------------------------------------------
-          BILL DETAILS / EDIT MODAL
-      --------------------------------------------- */}
+      {/* =====================================================
+          BILL DETAILS MODAL
+      ====================================================== */}
 
       {selectedBill && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
 
-        <div className="
-          fixed
-          inset-0
-          z-50
-          flex
-          items-center
-          justify-center
-          bg-black/40
-          p-4
-          backdrop-blur-sm
-        ">
+          <div className="max-h-[90vh] w-full max-w-[95vw] overflow-y-auto rounded-xl bg-white p-6 shadow-lg sm:max-w-3xl lg:max-w-4xl">
 
-          <div className="
-            max-h-[90vh]
-            w-full
-            max-w-4xl
-            overflow-y-auto
-            rounded-xl
-            bg-white
-            p-6
-            shadow-2xl
-          ">
+            {/* HEADER */}
 
-            {/* MODAL HEADER */}
-
-            <div className="
-              mb-6
-              flex
-              items-start
-              justify-between
-              gap-4
-            ">
+            <div className="mb-6 flex items-start justify-between gap-4">
 
               <div className="min-w-0">
 
                 {isEditMode ? (
-
                   <input
-                    type="text"
                     value={
                       selectedBill.customerName
                     }
@@ -1204,165 +769,85 @@ export default function HistoryMain() {
                           event.target.value,
                       })
                     }
-                    className="
-                      w-full
-                      rounded-lg
-                      border
-                      border-gray-300
-                      px-3
-                      py-2
-                      text-xl
-                      font-bold
-                      outline-none
-                      focus:border-blue-500
-                      focus:ring-2
-                      focus:ring-blue-100
-                    "
+                    className="w-full rounded border px-2 py-1 text-xl font-bold"
                   />
-
                 ) : (
-
-                  <h2 className="
-                    truncate
-                    text-2xl
-                    font-bold
-                    text-gray-900
-                  ">
+                  <h2 className="mb-1 truncate text-2xl font-bold">
                     {selectedBill.customerName}
                   </h2>
-
                 )}
 
-                <p className="
-                  mt-1
-                  text-sm
-                  text-gray-500
-                ">
+                <p className="text-sm text-gray-500">
                   Date:{" "}
                   {formatDate(
-                    selectedBill.date
+                    getBillDate(
+                      selectedBill
+                    ) ?? undefined
                   )}
                 </p>
 
               </div>
 
-
               <button
                 type="button"
-                onClick={handleCloseModal}
-                className="
-                  rounded-lg
-                  p-1
-                  text-gray-400
-                  transition
-                  hover:bg-gray-100
-                  hover:text-gray-700
-                "
-                aria-label="Close"
+                onClick={() =>
+                  setSelectedBill(null)
+                }
+                className="text-gray-400 transition hover:text-gray-600"
               >
                 <X size={24} />
               </button>
 
             </div>
 
+            {/* ITEMS */}
 
-            {/* ITEMS TABLE */}
+            <div className="mb-6 overflow-x-auto rounded-lg border border-gray-200">
 
-            <div className="
-              mb-6
-              overflow-x-auto
-              rounded-lg
-              border
-              border-gray-200
-            ">
+              <table className="w-full min-w-[600px]">
 
-              <table className="
-                w-full
-                min-w-[650px]
-              ">
-
-                <thead className="
-                  bg-gray-100
-                ">
+                <thead className="bg-gray-100">
 
                   <tr>
-
-                    <th className="
-                      px-4
-                      py-3
-                      text-left
-                      font-semibold
-                      text-gray-700
-                    ">
+                    <th className="px-4 py-3 text-left font-semibold">
                       Item
                     </th>
 
-                    <th className="
-                      px-4
-                      py-3
-                      text-center
-                      font-semibold
-                      text-gray-700
-                    ">
+                    <th className="px-4 py-3 text-center font-semibold">
                       Qty
                     </th>
 
-                    <th className="
-                      px-4
-                      py-3
-                      text-right
-                      font-semibold
-                      text-gray-700
-                    ">
+                    <th className="px-4 py-3 text-right font-semibold">
                       Price
                     </th>
 
-                    <th className="
-                      px-4
-                      py-3
-                      text-right
-                      font-semibold
-                      text-gray-700
-                    ">
+                    <th className="px-4 py-3 text-right font-semibold">
                       Total
                     </th>
 
                     {isEditMode && (
-                      <th className="
-                        px-4
-                        py-3
-                        text-center
-                        font-semibold
-                        text-gray-700
-                      ">
+                      <th className="px-4 py-3 text-center font-semibold">
                         Action
                       </th>
                     )}
-
                   </tr>
 
                 </thead>
-
 
                 <tbody>
 
                   {selectedBill.items.map(
                     (item, index) => (
-
                       <tr
                         key={index}
-                        className="
-                          border-t
-                          border-gray-200
-                        "
+                        className="border-t border-gray-200"
                       >
 
-                        {/* ITEM */}
+                        {/* NAME */}
 
                         <td className="px-4 py-3">
 
                           {isEditMode ? (
-
                             <input
                               type="text"
                               value={item.name}
@@ -1373,144 +858,120 @@ export default function HistoryMain() {
                                   event.target.value
                                 )
                               }
-                              className="
-                                w-full
-                                rounded
-                                border
-                                border-gray-300
-                                px-2
-                                py-1.5
-                                outline-none
-                                focus:border-blue-500
-                              "
-                              placeholder="Item name"
+                              className="w-full rounded border px-2 py-1"
+                              placeholder="Item Name"
                             />
-
                           ) : (
-
-                            <span className="
-                              font-medium
-                              text-gray-800
-                            ">
+                            <span>
                               {item.name}
                             </span>
-
                           )}
 
                         </td>
 
-
                         {/* QUANTITY */}
 
-                        <td className="
-                          px-4
-                          py-3
-                          text-center
-                        ">
+                        <td className="px-4 py-3 text-center">
 
                           {isEditMode ? (
-
                             <input
                               type="number"
                               min="0"
                               value={
                                 item.quantity
                               }
+                              className="w-16 rounded border px-1 py-1 text-center"
                               onChange={(event) =>
                                 handleItemChange(
                                   index,
                                   "quantity",
-                                  event.target.value
+                                  Number(
+                                    event.target
+                                      .value
+                                  )
                                 )
                               }
-                              className="
-                                w-20
-                                rounded
-                                border
-                                border-gray-300
-                                px-2
-                                py-1.5
-                                text-center
-                                outline-none
-                                focus:border-blue-500
-                              "
                             />
-
                           ) : (
-
                             item.quantity
-
                           )}
 
                         </td>
 
-
                         {/* PRICE */}
 
-                        <td className="
-                          px-4
-                          py-3
-                          text-right
-                        ">
+                        <td className="px-4 py-3 text-right">
                           ₹
                           {Number(
                             item.price
                           ).toFixed(2)}
                         </td>
 
-
                         {/* TOTAL */}
 
-                        <td className="
-                          px-4
-                          py-3
-                          text-right
-                          font-medium
-                        ">
+                        <td className="px-4 py-3 text-right">
                           ₹
                           {(
-                            Number(item.price) *
-                            Number(item.quantity)
+                            Number(
+                              item.price
+                            ) *
+                            Number(
+                              item.quantity
+                            )
                           ).toFixed(2)}
                         </td>
-
 
                         {/* DELETE ITEM */}
 
                         {isEditMode && (
-
-                          <td className="
-                            px-4
-                            py-3
-                            text-center
-                          ">
+                          <td className="px-4 py-3 text-center">
 
                             <button
                               type="button"
-                              onClick={() =>
-                                handleRemoveItem(
-                                  index
-                                )
-                              }
-                              className="
-                                rounded
-                                p-1
-                                text-red-500
-                                transition
-                                hover:bg-red-50
-                                hover:text-red-700
-                              "
-                              title="Remove item"
+                              onClick={() => {
+
+                                const updatedItems =
+                                  selectedBill.items.filter(
+                                    (_, itemIndex) =>
+                                      itemIndex !==
+                                      index
+                                  );
+
+                                const totalAmount =
+                                  updatedItems.reduce(
+                                    (
+                                      sum,
+                                      currentItem
+                                    ) =>
+                                      sum +
+                                      Number(
+                                        currentItem.price
+                                      ) *
+                                      Number(
+                                        currentItem.quantity
+                                      ),
+                                    0
+                                  );
+
+                                setSelectedBill({
+                                  ...selectedBill,
+                                  items:
+                                    updatedItems,
+                                  totalAmount:
+                                    Math.ceil(
+                                      totalAmount
+                                    ),
+                                });
+                              }}
+                              className="text-red-500 hover:text-red-700"
                             >
                               <Trash2 size={16} />
                             </button>
 
                           </td>
-
                         )}
 
                       </tr>
-
                     )
                   )}
 
@@ -1520,72 +981,48 @@ export default function HistoryMain() {
 
             </div>
 
+            {/* BOTTOM */}
 
-            {/* MODAL FOOTER */}
-
-            <div className="
-              flex
-              flex-col
-              gap-4
-              sm:flex-row
-              sm:items-center
-              sm:justify-between
-            ">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
               {/* ADD ITEM */}
 
-              {isEditMode ? (
-
+              {isEditMode && (
                 <button
                   type="button"
-                  onClick={handleAddItem}
-                  className="
-                    rounded-lg
-                    border
-                    border-gray-300
-                    bg-white
-                    px-4
-                    py-2
-                    text-sm
-                    font-medium
-                    text-gray-800
-                    transition
-                    hover:bg-gray-100
-                  "
+                  onClick={() => {
+
+                    const updatedItems = [
+                      ...selectedBill.items,
+                      {
+                        name: "",
+                        quantity: 1,
+                        price: 0,
+                        total: 0,
+                          unit: "plate" as const,
+                      },
+                    ];
+
+                    setSelectedBill({
+                      ...selectedBill,
+                      items: updatedItems,
+                    });
+                  }}
+                  className="inline-flex items-center justify-center rounded border border-gray-300 bg-gray-100 px-4 py-2 text-gray-800 hover:bg-gray-200"
                 >
                   + Add Item
                 </button>
-
-              ) : (
-
-                <div />
-
               )}
-
 
               {/* TOTAL */}
 
-              <div className="
-                flex
-                flex-col
-                items-start
-                sm:items-end
-              ">
+              <div className="flex flex-col items-start gap-1 sm:items-end">
 
-                <span className="
-                  text-sm
-                  font-medium
-                  text-gray-500
-                ">
+                <span className="text-sm font-medium text-gray-600">
                   Total Amount
                 </span>
 
-                <span className="
-                  mt-1
-                  text-2xl
-                  font-bold
-                  text-gray-900
-                ">
+                <span className="text-xl font-semibold">
                   ₹
                   {Number(
                     selectedBill.totalAmount
@@ -1596,90 +1033,29 @@ export default function HistoryMain() {
 
             </div>
 
+            {/* SAVE */}
 
-            {/* SAVE / CLOSE */}
-
-            <div className="
-              mt-6
-              flex
-              justify-end
-              gap-3
-              border-t
-              border-gray-200
-              pt-5
-            ">
-
-              {isEditMode ? (
-
-                <>
-                  <button
-                    type="button"
-                    onClick={handleCloseModal}
-                    className="
-                      rounded-lg
-                      border
-                      border-gray-300
-                      bg-white
-                      px-5
-                      py-2.5
-                      text-sm
-                      font-medium
-                      text-gray-700
-                      hover:bg-gray-50
-                    "
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleSaveBill}
-                    className="
-                      rounded-lg
-                      bg-gray-900
-                      px-5
-                      py-2.5
-                      text-sm
-                      font-medium
-                      text-white
-                      shadow-sm
-                      transition
-                      hover:bg-gray-800
-                    "
-                  >
-                    Save Changes
-                  </button>
-                </>
-
-              ) : (
+            {isEditMode && (
+              <div className="mt-6 flex justify-end">
 
                 <button
                   type="button"
-                  onClick={handleCloseModal}
-                  className="
-                    rounded-lg
-                    bg-gray-900
-                    px-5
-                    py-2.5
-                    text-sm
-                    font-medium
-                    text-white
-                    shadow-sm
-                    transition
-                    hover:bg-gray-800
-                  "
+                  onClick={() => {
+                    toast(
+                      "Save API is not connected yet."
+                    );
+                  }}
+                  className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                 >
-                  Close
+                  Save Changes
                 </button>
 
-              )}
-
-            </div>
+              </div>
+            )}
 
           </div>
 
         </div>
-
       )}
 
     </div>
