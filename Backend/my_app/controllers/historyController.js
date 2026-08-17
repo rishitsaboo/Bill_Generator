@@ -4,12 +4,13 @@ exports.getHistoryData = async (req, res) => {
     try{
         const bills = await Bill.find()
         .select("customerName date createdAt totalAmount items")
-        .sort({ createdAt: -1 });
+        .sort({ date: -1, createdAt: -1 });
         const formattedBills = bills.map((bill) => ({
             _id: bill._id,
             customerName: bill.customerName,
-            // New bills use `createdAt`; retain `date` as a fallback for legacy records.
-            date: bill.createdAt || bill.date,
+            // Preserve a bill's recorded date; use creation time only when it is absent.
+            date: bill.date || bill.createdAt,
+            createdAt: bill.createdAt,
             totalAmount: bill.totalAmount,
             items: bill.items
         }));

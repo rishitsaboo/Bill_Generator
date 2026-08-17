@@ -102,14 +102,14 @@ export default function HistoryMain() {
    *
    * IMPORTANT:
    *
-   * We prefer createdAt because that represents when the
-   * bill was actually created.
+   * We prefer the saved bill date so records are shown in
+   * their intended billing month and year.
    *
-   * If createdAt does not exist, we fall back to date.
+   * If it does not exist, we fall back to createdAt.
    */
 
   const getBillDate = (bill: Bill): Date | null => {
-    const rawDate = bill.createdAt ?? bill.date;
+    const rawDate = bill.date ?? bill.createdAt;
 
     if (!rawDate) {
       return null;
