@@ -23,7 +23,7 @@ exports.generateBill = async (req,res) => {
         const newBill = new Bill({
             customerName,
             items: normalizedItems,
-            totalAmount
+            totalAmount: Math.ceil(totalAmount)
         });
         await newBill.save()
         res.status(201).json({

@@ -1,25 +1,46 @@
 import API from "./axios";
+import type {
+    CreateOrderPayload,
+    Order,
+} from "../types/order";
 
-export const createOrder = async (orderData: any) => {
-  const response = await API.post("/api/orders", orderData);
-  return response.data;
-};
-export const getAllOrders = async () => {
-  const response = await API.get("/api/orders");
-  return response.data;
-};
+export const createOrder = async (
+    orderData: CreateOrderPayload
+): Promise<Order> => {
+    const response = await API.post<Order>(
+        "/orders",
+        orderData
+    );
 
-export const getOrderById = async (id: string) => {
-  const response = await API.get(`/api/orders/${id}`);
-  return response.data;
-};
-
-export const updateOrder = async (id: string, orderData: any) => {
-  const response = await API.put(`/api/orders/${id}`, orderData);
-  return response.data;
+    return response.data;
 };
 
-export const deleteOrder = async (id: string) => {
-  const response = await API.delete(`/api/orders/${id}`);
-  return response.data;
+export const getAllOrders = async (): Promise<Order[]> => {
+    const response = await API.get<Order[]>(
+        "/orders"
+    );
+
+    return response.data;
 };
+
+export const getOrderById = async (
+    id: string
+): Promise<Order> => {
+    const response = await API.get<Order>(
+        `/orders/${id}`
+    );
+
+    return response.data;
+};
+
+export const updateOrderStatus = async(
+    id:string,
+    status:string,
+):Promise<Order> => {
+    const response = await API.put<Order>(
+        `orders/${id}/status`,
+        {status}
+    );
+    return response.data;
+}
+

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { Search } from "lucide-react";
 
 import type { Item } from "../types/Item";
-import { deleteItem, getItemsBycategory, updateItem } from "../api/productApi";
+import { deleteItem, getItemsByCategory, updateItem } from "../api/productApi";
 import EditItemModal from "../components/products/EditItemModal";
 
 const Products = () => {
@@ -23,7 +23,7 @@ const Products = () => {
 }, [items, searchQuery]);
   const fetchItems = async (selectedCategory: string) => {
     try {
-      const data = await getItemsBycategory(selectedCategory);
+      const data = await getItemsByCategory(selectedCategory);
       setItems(data);
     } catch (error) {
       console.error("Error fetching items", error);
@@ -45,16 +45,17 @@ const Products = () => {
   const handleSaveItem = async (
     name: string,
     price: number,
-    unit?: "plate" | "piece" | "per/kg"
+    unit?: "plate" | "piece" | "per/kg",
+    isBestSeller?: boolean
   ) => {
     if (!editingItem) return;
 
     try {
-      await updateItem(editingItem._id!, name, price, unit);
+      await updateItem(editingItem._id!, name, price, unit, isBestSeller);
 
       const updatedItems = items.map((item) =>
         item._id === editingItem._id
-          ? { ...item, name, price, unit }
+          ? { ...item, name, price, unit, isBestSeller }
           : item
       );
 

@@ -61,7 +61,7 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
           </NavLink>
 
           <NavLink
-            to="/Products"
+            to="/products"
             className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
           >
             <FaBox />
@@ -87,6 +87,13 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
           >
             <BsClockHistory />
             Bill History
+          </NavLink>
+          <NavLink
+            to="/orders"
+            className="flex items-center gap-3 p-3 rounded hover:bg-gray-100"
+          >
+            <BsClockHistory />
+            Orders
           </NavLink>
         </nav>
       </div>

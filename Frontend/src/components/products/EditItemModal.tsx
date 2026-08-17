@@ -4,17 +4,18 @@ import type { Item } from "../../types/Item";
 type EditPriceModalProps = {
   item: Item;
   onClose: () => void;
-  onSave: (name: string, price: number, unit?: "plate" | "piece" | "per/kg") => Promise<void>;
+  onSave: (name: string, price: number, unit?: "plate" | "piece" | "per/kg", isBestSeller?: boolean) => Promise<void>;
 };
 
 const EditItemModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
   const [name, setName] = useState(item.name);
   const [price, setPrice] = useState(item.price);
   const [unit, setUnit] = useState<"plate" | "piece" | "per/kg">(item.unit || "piece");
+  const [isBestSeller, setIsBestSeller] = useState<boolean>(item.isBestSeller || false);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSave(name, price, unit);
+    await onSave(name, price, unit, isBestSeller);
   };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40">
@@ -50,6 +51,16 @@ const EditItemModal = ({ item, onClose, onSave }: EditPriceModalProps) => {
             <option value="piece">Piece</option>
             <option value="per/kg">Per KG</option>
           </select>
+
+          <label className="flex items-center gap-2 mb-4">
+            <input
+              type="checkbox"
+              checked={isBestSeller}
+              onChange={(e) => setIsBestSeller(e.target.checked)}
+              className="h-4 w-4"
+            />
+            <span>⭐ Best Seller</span>
+          </label>
 
           <div className="flex justify-end gap-3">
 

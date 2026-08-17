@@ -1,7 +1,7 @@
 import API from "./axios";
 import type { Item } from "../types/Item";
 
-export const getItemsBycategory = async (
+export const getItemsByCategory = async (
   categoryName: string
 ): Promise<Item[]> => {
   const res = await API.get<Item[]>(`/items/category/${categoryName}`);
@@ -9,23 +9,10 @@ export const getItemsBycategory = async (
 };
 
 export const addItem = async (data: FormData) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/add-item`, {
-    method: "POST",
-    body: data,
+  const response = await API.post("/add-item", data, {
+    headers: { "Content-Type": "multipart/form-data" },
   });
-
-  const responseData = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw {
-      response: {
-        status: response.status,
-        data: responseData,
-      },
-    };
-  }
-
-  return { data: responseData };
+  return { data: response.data };
 };
 
 export const deleteItem = async (id: string) => {
@@ -36,7 +23,8 @@ export const updateItem = async (
   id: string,
   name: string,
   price: number,
-  unit?: "plate" | "piece" | "per/kg"
+  unit?: "plate" | "piece" | "per/kg",
+  isBestSeller?: boolean
 ) => {
-  return API.put(`/update-price/${id}`, { name, price, unit });
+  return API.put(`/update-price/${id}`, { name, price, unit, isBestSeller });
 };

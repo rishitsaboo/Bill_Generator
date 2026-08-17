@@ -16,14 +16,14 @@ type AddedItem = Item & {
     total: number;
     unit?: "plate" | "piece" | "per/kg";
 };
-    
-type AddItemModalProps = {
+
+type BillItemQuantityModalProps = {
     item: Item;
     onClose: () => void;
     onAdd: (data: AddedItem) => void;
 };
 
-export default function AddItemModal({ item, onClose, onAdd }: AddItemModalProps) {
+export default function BillItemQuantityModal({ item, onClose, onAdd }: BillItemQuantityModalProps) {
     const qtyType = item.unit === "per/kg" ? "Kg" : "Pcs";
     const [kg, setKg] = useState("");
     const [gram, setGram] = useState("");
@@ -100,7 +100,7 @@ export default function AddItemModal({ item, onClose, onAdd }: AddItemModalProps
                     <button className="ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
                         onClick={onClose}>Cancel</button>
                 </div>
-                
+
             </div>
         </div>
     );

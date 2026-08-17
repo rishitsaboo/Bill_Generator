@@ -9,6 +9,7 @@ interface AddItem {
   category: string;
   image: File | null;
   unit: "plate" | "piece" | "per/kg";
+  isBestSeller?: boolean;
 }
 
 const AddItemForm: React.FC = () => {
@@ -19,7 +20,8 @@ const AddItemForm: React.FC = () => {
     price: 0,
     category: "",
     image: null,
-    unit: "plate", // Default unit value
+    unit: "plate", 
+    isBestSeller: false, 
   });
 
   const [error, setError] = useState<string>("");
@@ -28,11 +30,16 @@ const AddItemForm: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-
+    const { name, value, type } = e.target;
+    const checked = 
+          type === "checkbox"
+          ? (e.target as HTMLInputElement).checked 
+          : undefined;
     setFormdata((prev) => ({
       ...prev,
       [name]: name === "price" ? Number(value) : value,
+      [name]: checked !== undefined ? checked : value, 
+      [name]: type === "checkbox" ? checked : name === "price" ? Number(value) : value,
     }));
   };
 
@@ -69,6 +76,8 @@ const AddItemForm: React.FC = () => {
       data.append("category", formData.category);
       data.append("image", formData.image, formData.image.name);
       data.append("unit", formData.unit);
+      // include isBestSeller as string since backend expects FormData
+      data.append("isBestSeller", (formData.isBestSeller || false).toString());
 
       await addItem(data);
       toast.success("Product added successfully");
@@ -128,6 +137,16 @@ const AddItemForm: React.FC = () => {
               <option value="piece">Piece</option>
               <option value="per/kg">Per KG</option>
             </select>
+            <label className="flex items-center gap-2 mt-2">
+              <input
+                type="checkbox"
+                name="isBestSeller"
+                checked={formData.isBestSeller}
+                onChange={handleChange}
+                className="h-4 w-4"
+              />
+              <span>⭐ Add to Best Sellers</span>
+            </label>
             
           </div>
 

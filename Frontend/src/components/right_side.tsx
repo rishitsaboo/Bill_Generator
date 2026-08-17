@@ -18,6 +18,7 @@ const RightSide: React.FC<RightSideProps> = ({
   onCustomerNameChange
 }) => {
   const total = billItems.reduce((sum, item) => sum + item.amount * item.qty, 0);
+  const roundedTotal = Math.ceil(total);
   const now = new Date();
   const date = now.toLocaleDateString("en-IN",{
     day: "2-digit",
@@ -181,7 +182,7 @@ const RightSide: React.FC<RightSideProps> = ({
           }}
         >
           <span>Total</span>
-          <span style={{ textAlign: "right" }}>₹{total.toFixed(2)}</span>
+          <span style={{ textAlign: "right" }}>₹{roundedTotal}</span>
         </div>
 
 

@@ -3,67 +3,132 @@ import BillGenerator from "./pages/bill_preview";
 import Login_page from "./pages/login_page";
 import Register from "./pages/register_page";
 import DashBoard from "./pages/dashboard";
-import DashboardLayout from "./components/layout/DashboardLayout"
+import DashboardLayout from "./components/layout/DashboardLayout";
 import Products from "./pages/products";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AddItem from "./pages/AddItem";
 import BillHistoryPage from "./pages/bill_history";
+import Checkout from "./pages/customer/checkout";
+import Menu from "./pages/customer/menu";
+import OrderSuccess from "./pages/customer/orderSuccess";
+import Orders from "./pages/allOrder";
+import OrderDetails from "./pages/orderDetails";
+import { CartProvider } from "./context/CartContext";
+
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login_page />} />
-      <Route path="/register" element={<Register />} />
-      <Route 
-        path="bill-generator" 
-        element={
-          <ProtectedRoute>
+    <CartProvider>
+      <Routes>
+
+        {/* Public / Customer Routes */}
+
+        <Route
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login_page />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/menu"
+          element={<Menu />}
+        />
+
+        <Route
+          path="/checkout"
+          element={<Checkout />}
+        />
+        <Route
+          path="/order-success"
+          element={<OrderSuccess />}
+          />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin/orders/:id"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <OrderDetails />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Orders />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/bill-generator"
+          element={
+            <ProtectedRoute>
               <DashboardLayout>
                 <BillGenerator />
               </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <DashBoard />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Products />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      /> 
-      <Route
-        path="/add-item"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <AddItem />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      /> 
-      <Route
-        path="/bill-history"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <BillHistoryPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <DashBoard />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Products />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/add-item"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <AddItem />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/bill-history"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <BillHistoryPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+    </CartProvider>
   );
 }

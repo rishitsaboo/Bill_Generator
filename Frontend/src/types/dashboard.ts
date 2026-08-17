@@ -12,6 +12,7 @@ export type TopSeller={
    name: string;
    category?: string;
    totalQuantity:number;
+   totalSales: number;
 };
 
 export interface DashboardData{

@@ -34,6 +34,10 @@ const itemSchema = new mongoose.Schema({
     description: {
         type: String,
         required: false
+    },
+    isBestSeller: {
+        type: Boolean,
+        default: false
     }
 });
 // Create Model

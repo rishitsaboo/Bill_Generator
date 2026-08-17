@@ -23,12 +23,17 @@ exports.updateItem = async (req,res) => {
 
     try{
         const itemId = req.params.id;
-        const { name, price, unit } = req.body
+        const { name, price, unit, isBestSeller } = req.body
 
         const updatedData = {};
         if (name !== undefined) updatedData.name = name;
         if (price !== undefined) updatedData.price = price;
         if (unit !== undefined) updatedData.unit = unit;
+        // Handle isBestSeller explicitly so false is a valid update
+        if (isBestSeller !== undefined) {
+            // req.body may send "true"/"false" as strings or booleans
+            updatedData.isBestSeller = isBestSeller === true || isBestSeller === 'true';
+        }
         const updatedItem = await Item.findByIdAndUpdate(
             itemId,
             updatedData,
@@ -68,7 +73,8 @@ exports.addItem = async (req,res) => {
             category: req.body.category,
             price: req.body.price,
             image: imageUrl,
-            unit: req.body.unit
+            unit: req.body.unit,
+            isBestSeller: req.body.isBestSeller === "true"
         });
         await newItem.save();
         res.json(newItem);

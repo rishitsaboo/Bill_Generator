@@ -120,7 +120,9 @@ export default function HistoryMain() {
     setSelectedBill({
       ...selectedBill,
       items: updatedItems,
-      totalAmount: updatedItems.reduce((sum, item) => sum + item.total, 0),
+      totalAmount: Math.ceil(
+        updatedItems.reduce((sum, item) => sum + item.total, 0)
+      ),
     });
     
   };
@@ -343,6 +345,7 @@ export default function HistoryMain() {
                           quantity: 1,
                           price: 0,
                           total: 0,
+                          unit: "plate",
                         },
                       ],
                     });

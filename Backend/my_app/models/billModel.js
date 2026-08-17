@@ -1,38 +1,73 @@
 const mongoose = require("mongoose");
 
-
 const billSchema = new mongoose.Schema({
-    customerName:{
+    customerName: {
         type: String,
         required: true
     },
-    date:{
-        type: Date,
-        default: Date.now,
-        index:true
+
+    customerPhoneNumber: {
+        type: String,
+        required: true
     },
-    items:[
+
+    items: [
         {
-            itemId:{
+            itemId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'item'
+                ref: "Item"
             },
+
             name: String,
-            category:String,
+
+            category: String,
+
             price: Number,
+
             quantity: Number,
+
             total: Number,
+
             unit: {
                 type: String,
-                enum:["plate","piece","per/kg"],
+                enum: ["plate", "piece", "per/kg"],
                 required: true
+            },
+
+            weightInGrams: {
+                type: Number,
+                default: null
             }
         }
     ],
-    totalAmount:{
-        type:Number,
+
+    totalAmount: {
+        type: Number,
         required: true
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+
+    status: {
+        type: String,
+        enum: [
+            "Pending",
+            "Accepted",
+            "Preparing",
+            "Ready",
+            "Completed",
+            "Cancelled"
+        ],
+        default: "Pending"
+    },
+
+    deliveryTime: {
+        type: Date,
+        default: null
     }
 });
 
-module.exports = mongoose.model('Bill',billSchema);
+module.exports = mongoose.model("Bill", billSchema);

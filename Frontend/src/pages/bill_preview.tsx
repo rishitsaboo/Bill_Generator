@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import AddItemModal from "../components/AddItemModalt.tsx";
-import RightSide from "../components/right_side.tsx";
+import BillItemQuantityModal from "../components/BillItemQuantityModal";
+import RightSide from "../components/right_side";
 import html2canvas from "html2canvas";
 import { Search } from "lucide-react";
-import { getItemsBycategory } from "../api/productApi";
+import { getItemsByCategory } from "../api/productApi";
 import type { Item as ApiItem } from "../types/Item";
 import toast from "react-hot-toast";
 import client from "../api/axios";
-const API_URL = import.meta.env.VITE_API_URL;
 
 /* ---------------------- Types ---------------------- */
 
@@ -71,9 +70,8 @@ const saveBillToDatabase = async (billItems: BillItem[], customerName: string) =
       unit: item.unit,
     }));
 
-    const totalAmount = formattedItems.reduce(
-      (sum, item) => sum + item.total,
-      0
+    const totalAmount = Math.ceil(
+      formattedItems.reduce((sum, item) => sum + item.total, 0)
     );
 
     const billData = {
@@ -196,7 +194,7 @@ function BillGenerator() {
 
   const fetchItems = async (selectedCategory: string) => {
     try {
-      const data: ApiItem[] = await getItemsBycategory(selectedCategory);
+      const data: ApiItem[] = await getItemsByCategory(selectedCategory);
 
       const normalized: DisplayItem[] = data.map((item) => ({
         id: item._id,
@@ -371,7 +369,7 @@ function BillGenerator() {
       {/* Modal */}
 
       {showModal && currentItem && (
-        <AddItemModal
+        <BillItemQuantityModal
           item={currentItem}
           onClose={() => setShowModal(false)}
           onAdd={(addedItem: AddedItem) => {

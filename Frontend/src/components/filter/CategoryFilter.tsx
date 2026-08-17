@@ -10,7 +10,7 @@ const categories = [
   "Sabzi",
 ]
 
-const CategortFilter = ({selected,onSelect}: Props) =>{
+const CategoryFilter = ({selected,onSelect}: Props) =>{
     return(
         <div className="overflow-x-auto whitespace-nowrap flex space-x-2 bg-gray-100 pb-2">
             {categories.map((cat)=> (
@@ -29,4 +29,4 @@ const CategortFilter = ({selected,onSelect}: Props) =>{
         </div>
     )
 }
-export default CategortFilter;
+export default CategoryFilter;

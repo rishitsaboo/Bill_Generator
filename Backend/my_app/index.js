@@ -16,11 +16,8 @@ const statsRoutes = require("./routes/statsRoutes");
 const billRoutes = require("./routes/billRoutes");
 const authRoutes = require("./routes/authroutes");
 const historyRoutes = require("./routes/historyRoutes");
-const historyController = require("./controllers/histryController");
 const orderRoutes = require("./routes/orderRoutes");
-const orderController = require("./controllers/orderControllers");
 const menuRoutes = require("./routes/menuRoutes");
-const menuController = require("./controllers/menuControllers");
 const app = express();
 
 // CORS configuration - allow local dev, primary frontend, and Vercel/Render previews

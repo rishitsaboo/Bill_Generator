@@ -14,6 +14,7 @@ const ItemTable = ({ items, onEdit, onDelete }: ItemTableProps) =>{
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Price</th>
                     <th className="px-4 py-3">Category</th>
+                    <th className="px-4 py-3">Best Seller</th>
                     <th className="px-4 py-3">Action</th>
                 </tr>
             </thead>

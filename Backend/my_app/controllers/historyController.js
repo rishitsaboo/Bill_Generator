@@ -1,4 +1,4 @@
-const Bill = require('../models/billModel')
+const Bill = require('../models/billModel');
 
 exports.getHistoryData = async (req, res) => {
     try{
@@ -25,7 +25,6 @@ exports.getHistoryData = async (req, res) => {
     }
 };
 
-
 exports.getHistoryBillsById = async (req, res) => {
     try {
         const billId = req.params.id;
@@ -47,7 +46,7 @@ exports.getHistoryBillsById = async (req, res) => {
             message: error.message 
         });
     }
-}
+};
 
 exports.deleteHistoryBillById = async (req, res) => {
     try {
@@ -71,7 +70,7 @@ exports.deleteHistoryBillById = async (req, res) => {
             message: error.message 
         });
     }
-}
+};
 
 exports.editHistoryBill = async (req, res) => {
     try {
@@ -102,7 +101,7 @@ exports.editHistoryBill = async (req, res) => {
             message: error.message 
         });
     }
-}
+};
 
 exports.addItemInBill = async (req, res) => {
     try {
@@ -144,14 +143,3 @@ exports.addItemInBill = async (req, res) => {
         });
     }
 };
-
-
-
-
-
-
-
-
-
-
-    

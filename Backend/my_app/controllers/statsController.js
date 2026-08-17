@@ -35,7 +35,15 @@ exports.getTopSellers = async (req, res) => {
       {
         $group: {
           _id: "$items.name",
-          totalQuantity: { $sum: "$items.quantity" }
+          totalQuantity: { $sum: "$items.quantity" },
+          totalSales: {
+            $sum: {
+              $ifNull: [
+                "$items.total",
+                { $multiply: ["$items.price", "$items.quantity"] }
+              ]
+            }
+          }
         }
       },
       {
@@ -49,7 +57,8 @@ exports.getTopSellers = async (req, res) => {
 
     const formatted = topSellerData.map(item => ({
       name: item._id,
-      totalQuantity: item.totalQuantity
+      totalQuantity: item.totalQuantity,
+      totalSales: item.totalSales
     }));
 
     res.json(formatted);
@@ -149,7 +158,15 @@ exports.getDashboardData = async (req, res) => {
         {
           $group: {
             _id: "$items.name",
-            totalQuantity: { $sum: "$items.quantity" }
+            totalQuantity: { $sum: "$items.quantity" },
+            totalSales: {
+              $sum: {
+                $ifNull: [
+                  "$items.total",
+                  { $multiply: ["$items.price", "$items.quantity"] }
+                ]
+              }
+            }
           }
         },
         { $sort: { totalQuantity: -1 } },
@@ -179,7 +196,8 @@ exports.getDashboardData = async (req, res) => {
 
     const formattedTopSellers = topSellerData.map(item => ({
       name: item._id || "Unknown",
-      totalQuantity: item.totalQuantity
+      totalQuantity: item.totalQuantity,
+      totalSales: item.totalSales
     }));
 
     res.json({

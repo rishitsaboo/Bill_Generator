@@ -9,6 +9,6 @@ export type billInformation = {
         quantity: number;
         price: number;
         total: number;
-        unit: "plate" | "piece" | "per/kg"
+        unit?: "plate" | "piece" | "per/kg"
     }[];
 };
