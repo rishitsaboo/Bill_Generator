@@ -1,99 +1,66 @@
-# Quick Bill – Bill Generator
+# Quick Bill — Food Billing & Ordering App
 
-A complete billing and admin dashboard application for a food business, built with React + TypeScript on the frontend and Express.js + MongoDB on the backend.
+Quick Bill is a full-stack application for a food business. It provides an admin workspace for product management, bill generation, history, orders, and sales reporting, plus a customer menu, cart, and checkout experience.
 
-The project is designed for quick bill creation, inventory management, analytics, and bill history tracking.
+## Highlights
 
-## Features
-
-- Bill generation with category-based product selection
-- Custom item entry for on-the-fly billing
-- Export bill receipt as JPEG using `html2canvas`
-- Product CRUD with item image uploads via Cloudinary
-- JWT-based admin authentication
-- Dashboard analytics with trend and category charts
-- Bill history with list, detail, edit, delete, and add-item support
-- Responsive UI powered by Tailwind CSS
+- Admin login and registration protected by a registration secret
+- Product catalogue with categories, pricing, units, availability, best-seller flags, and Cloudinary image uploads
+- Quick bill creation and downloadable receipt image
+- Bill history: view, edit, delete, and add items to an existing bill
+- Dashboard reporting for daily and monthly sales, daily sales trends, category revenue, and top-selling items
+- Top-selling-item tooltips show both quantity sold and total sales amount
+- Customer-facing menu with category filtering, cart, checkout, and order confirmation
+- Admin order management with status updates (`Pending` through `Completed` or `Cancelled`)
+- Responsive React UI styled with Tailwind CSS
 
 ## Tech Stack
 
-### Frontend
+| Area | Technologies |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite, React Router, Tailwind CSS, Axios, Recharts |
+| Backend | Node.js, Express 5, MongoDB, Mongoose |
+| Authentication | JWT, bcryptjs |
+| Media | Multer, Cloudinary |
+| Receipts & UI | html2canvas, lucide-react, react-hot-toast |
 
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS 4
-- React Router DOM 7
-- Axios
-- html2canvas
-- dom-to-image-more
-- html2pdf.js
-- recharts
-- lucide-react
-- react-hot-toast
+## Project Structure
 
-### Backend
-
-- Node.js
-- Express.js 5
-- MongoDB
-- Mongoose
-- bcryptjs
-- jsonwebtoken
-- multer + multer-storage-cloudinary
-- dotenv
-- cors
-
-## Repository Structure
-
-```
+```text
 bill_generater/
-├── Backend/
-│   └── my_app/
-│       ├── index.js
-│       ├── package.json
-│       ├── .env
-│       ├── config/
-│       │   └── cloudinary.js
-│       ├── controllers/
-│       ├── middleware/
-│       ├── models/
-│       ├── routes/
-│       └── scripts/
-└── Frontend/
-    ├── index.html
-    ├── package.json
-    ├── .env
-    ├── postcss.config.js
-    ├── tailwind.config.js
-    ├── tsconfig.json
-    ├── vite.config.ts
-    ├── public/
-    └── src/
-        ├── App.tsx
-        ├── api/
-        ├── components/
-        ├── pages/
-        └── types/
+├── Frontend/                 # React + TypeScript application
+│   ├── src/
+│   │   ├── api/              # Axios API clients
+│   │   ├── components/       # Admin, customer, dashboard, and shared UI
+│   │   ├── context/          # Cart state
+│   │   ├── pages/            # Route-level pages
+│   │   └── types/            # TypeScript models
+│   ├── public/               # Icons and static images
+│   └── vercel.json           # SPA rewrite configuration
+└── Backend/my_app/           # Express + MongoDB API
+    ├── config/               # Cloudinary configuration
+    ├── controllers/          # Request handlers
+    ├── middleware/           # JWT/admin authorization
+    ├── models/               # Admin, Item, Bill, and Order schemas
+    ├── routes/               # API route definitions
+    └── scripts/              # Development seed data/scripts
 ```
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+- Node.js 18+
+- npm
+- A MongoDB database (Atlas or self-hosted)
+- A Cloudinary account for product image uploads
 
-- Node.js v18 or higher
-- MongoDB Atlas / MongoDB cloud cluster
-- Cloudinary account
-- npm installed
-
-### Backend Environment Variables
+## Environment Variables
 
 Create `Backend/my_app/.env`:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-ADMIN_SECRET=your_admin_registration_secret
+JWT_SECRET=use_a_long_random_secret
+ADMIN_SECRET=secret_required_to_register_an_admin
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
@@ -101,27 +68,17 @@ FRONTEND_URL=http://localhost:5173
 PORT=3000
 ```
 
-### Frontend Environment Variables
-
 Create `Frontend/.env`:
 
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
-> Restart the frontend dev server after changing `.env`.
+Restart the Vite development server after changing a `VITE_*` variable.
 
-## MongoDB & Mongoose
+## Install and Run
 
-The backend connects to MongoDB using Mongoose in `Backend/my_app/index.js`.
-
-- `MONGO_URI` is required in `Backend/my_app/.env`.
-- Mongoose manages the schema definitions and validation for `Item`, `Bill`, and `Admin` models.
-- Collections are defined in `Backend/my_app/models/ItemModel.js`, `Backend/my_app/models/billModel.js`, and `Backend/my_app/models/Admin.js`.
-- Mongoose handles object mapping between MongoDB documents and backend JavaScript objects, making queries and updates easier.
-- If MongoDB is unavailable or `MONGO_URI` is invalid, the backend fails to start and logs an error.
-
-## Installation
+Install the two applications independently:
 
 ```bash
 cd Frontend
@@ -131,103 +88,140 @@ cd ../Backend/my_app
 npm install
 ```
 
-## Run Locally
+Start the API in one terminal:
 
 ```bash
-# Frontend
-cd Frontend
-npm run dev
-
-# Backend
 cd Backend/my_app
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Start the frontend in another terminal:
 
-## Frontend Routes
+```bash
+cd Frontend
+npm run dev
+```
 
-- `/login` — Login page
-- `/register` — Admin registration
-- `/bill-generator` — Bill generation page
-- `/dashboard` — Analytics dashboard
-- `/products` — Product inventory management
-- `/add-item` — Add new item
-- `/bill-history` — Bill history and details
+Open the local URL printed by Vite (normally `http://localhost:5173`). The API runs on port `3000` by default.
 
-## API Endpoints
+## Application Routes
+
+### Customer routes
+
+| Route | Purpose |
+| --- | --- |
+| `/menu` | Browse products and add them to the cart |
+| `/checkout` | Enter customer details and place an order |
+| `/order-success` | Order confirmation |
+
+### Admin routes
+
+Admin pages require a valid JWT stored as `auth_token` in browser local storage.
+
+| Route | Purpose |
+| --- | --- |
+| `/login` | Admin sign-in |
+| `/register` | Admin registration |
+| `/dashboard` | Sales analytics |
+| `/bill-generator` | Create a bill and receipt |
+| `/products` | Product management |
+| `/add-item` | Add a product |
+| `/bill-history` | Manage previous bills |
+| `/orders` | Manage customer orders |
+| `/admin/orders/:id` | View one order |
+
+## API Reference
 
 Base URL: `http://localhost:3000/api`
 
+Routes marked **Admin** require `Authorization: Bearer <token>`.
+
 ### Authentication
 
-- `POST /api/auth/register` — Register admin
-- `POST /api/auth/login` — Login admin
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/auth/register` | Register an admin; requires `adminKey` in the body |
+| `POST` | `/auth/login` | Sign in and receive a JWT |
 
-### Item Management
+### Admin product management
 
-- `GET /api/items` — Get all items
-- `GET /api/items/category/:categoryName` — Get items by category
-- `POST /api/add-item` — Add new item with image upload
-- `PUT /api/update-price/:id` — Update item data
-- `DELETE /api/delete-item/:id` — Delete item
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/items` | List products (**Admin**) |
+| `GET` | `/items/category/:categoryName` | List a category (**Admin**) |
+| `POST` | `/add-item` | Add a product and image (**Admin**, `multipart/form-data`) |
+| `PUT` | `/update-price/:id` | Update name, price, unit, or best-seller flag (**Admin**) |
+| `DELETE` | `/delete-item/:id` | Delete a product (**Admin**) |
 
-### Billing
+### Public customer menu
 
-- `POST /api/bills` — Create bill
-- `POST /api/generate-bill` — Create bill alias
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/menu/items` | List all menu items |
+| `GET` | `/menu/items/category/:categoryName` | List one menu category |
+| `GET` | `/menu/items/:id` | Get one menu item |
 
-### Bill History
+### Bills and bill history
 
-- `GET /api/history` — List bills
-- `GET /api/history/:id` — Get bill detail
-- `PUT /api/history/:id` — Update bill
-- `DELETE /api/history/:id` — Delete bill
-- `POST /api/history/:id/items` — Add item to existing bill
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/bills` | Create a bill (**Admin**) |
+| `POST` | `/generate-bill` | Alias for creating a bill (**Admin**) |
+| `GET` | `/history` | List bills (**Admin**) |
+| `GET` | `/history/:id` | Get a bill (**Admin**) |
+| `PUT` | `/history/:id` | Update a bill (**Admin**) |
+| `DELETE` | `/history/:id` | Delete a bill (**Admin**) |
+| `POST` | `/history/:id/items` | Add an item to a bill (**Admin**) |
 
-### Statistics
+### Customer orders
 
-- `GET /api/stats/dashboard` — Dashboard metrics
-- `GET /api/stats/dashboard/top-sellers` — Top seller list
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/orders` | Place a customer order |
+| `GET` | `/orders` | List orders (**Admin**) |
+| `GET` | `/orders/:id` | Get an order (**Admin**) |
+| `PUT` | `/orders/:id/status` | Update order status (**Admin**) |
+| `DELETE` | `/orders/:id` | Delete an order (**Admin**) |
 
-## Data Models
+### Dashboard statistics
+
+| Method | Endpoint | Query parameters | Description |
+| --- | --- | --- | --- |
+| `GET` | `/stats/dashboard` | `year`, `month`, `date`, optional `category` | Daily/monthly totals, sales trend, category revenue, and top sellers |
+| `GET` | `/stats/dashboard/top-sellers` | `year`, `month`, optional `category` | Five products ranked by quantity sold, including `totalSales` |
+
+## Core Data Models
 
 ### Item
 
-- `name`: String
-- `category`: String
-- `price`: Number
-- `image`: String
-- `unit`: `plate` | `piece` | `per/kg`
+`name`, `category`, `price`, `image`, `unit`, optional `ingredients`, `description`, `isAvailable`, and `isBestSeller`.
 
-### Bill
+Supported units: `plate`, `piece`, and `per/kg`.
 
-- `customerName`: String
-- `date`: Date
-- `items`: Array of items
-- `totalAmount`: Number
+### Bill and Order
 
-## Notes
+Both contain customer details, line items, a total amount, timestamps, and a status. Each stored line item includes the product name, category, price, quantity, unit, and line total. Orders use these statuses:
 
-- The bill generator saves bills to MongoDB before exporting a JPG receipt.
-- Frontend stores JWT token in `localStorage` under `auth_token`.
-- Item units are supported and preserved in bills.
+```text
+Pending → Accepted → Preparing → Ready → Completed
+                              ↘ Cancelled
+```
 
-## Troubleshooting
+## Dashboard Metrics
 
-### API errors
+Dashboard data is grouped by the selected calendar month and uses the `Asia/Kolkata` timezone for the daily sales trend. The top-sellers response includes:
 
-- Confirm backend is running on `http://localhost:3000`
-- Confirm `VITE_API_URL` points to `http://localhost:3000/api`
-- Restart frontend after env changes
+```json
+{
+  "name": "Kachori Chaat",
+  "totalQuantity": 35,
+  "totalSales": 1750
+}
+```
 
-### CORS errors
+The chart visualizes quantity sold; its tooltip presents both quantity and total sales in Indian rupees.
 
-Update `allowedOrigins` in `Backend/my_app/index.js` if your frontend origin differs.
-
-## Deployment
-
-### Frontend
+## Build for Production
 
 ```bash
 cd Frontend
@@ -235,14 +229,16 @@ npm run build
 npm run preview
 ```
 
-### Backend
+Deploy `Frontend` as a static single-page application (the included `vercel.json` handles route rewrites on Vercel). Deploy `Backend/my_app` to a Node.js host with all required environment variables set. Add the deployed frontend domain to `allowedOrigins` in `Backend/my_app/index.js` when needed.
 
-Deploy `Backend/my_app` to a Node host, set environment variables, and ensure `FRONTEND_URL` is configured.
+## Troubleshooting
+
+- **The frontend cannot reach the API:** confirm the backend is running, `VITE_API_URL` points to the API base URL, and restart Vite after environment changes.
+- **CORS is blocked:** add the frontend origin to `allowedOrigins` in `Backend/my_app/index.js`.
+- **Image upload fails:** verify all three Cloudinary credentials and submit the product image as the `image` form field.
+- **Admin request returns 401/403:** sign in again and ensure the request contains the stored JWT.
+- **Sales amount in the top-sellers tooltip is zero:** restart or redeploy the backend after changes to the statistics controller; the endpoint must return `totalSales` for each item.
 
 ## License
 
 Proprietary project for Kavita's Kitchen. All rights reserved.
-
-## License 📄
-
-Proprietary project for Kavita's Kitchen. All rights reserved. No open source license.
