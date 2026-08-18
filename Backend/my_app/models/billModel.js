@@ -8,7 +8,7 @@ const billSchema = new mongoose.Schema({
 
     customerPhoneNumber: {
         type: String,
-        required: true
+        default: "",
     },
 
     items: [
