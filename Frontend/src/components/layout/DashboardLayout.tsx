@@ -27,11 +27,11 @@ export default function DashboardLayout({ children }: Props) {
 
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="flex flex-col flex-1">
+      <div className="flex min-w-0 flex-1 flex-col">
 
         <Navbar setIsOpen={setIsOpen} />
 
-        <main className="p-6 overflow-y-auto">
+        <main className="min-w-0 overflow-y-auto p-4 sm:p-6">
           {children}
         </main>
 
